@@ -852,43 +852,232 @@ struct ListRowDemo: View {
 struct DifferentiateColorTestView: View {
     let color: Color
     @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
+    @State private var selectedOption = "Option 1"
+    @State private var email = "invalid-email"
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Enable this setting in Accessibility to see icons appear automatically. The app responds instantly!")
+            Text("Toggle Differentiate Without Color in Accessibility > Display & Text Size to see icons and labels appear.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding()
                 .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            Text(differentiateWithoutColor ? "Icons shown (Feature ON)" : "Color only (Feature OFF)")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(differentiateWithoutColor ? .green : .secondary)
-
+            // Feature Status
             HStack(spacing: 12) {
-                StatusIndicator(
-                    status: "Success",
-                    color: .green,
-                    icon: "checkmark.circle.fill",
-                    showIcon: differentiateWithoutColor
-                )
+                Image(systemName: differentiateWithoutColor ? "checkmark.circle.fill" : "circle")
+                    .font(.title)
+                    .foregroundStyle(color)
 
-                StatusIndicator(
-                    status: "Warning",
-                    color: .orange,
-                    icon: "exclamationmark.triangle.fill",
-                    showIcon: differentiateWithoutColor
-                )
-
-                StatusIndicator(
-                    status: "Error",
-                    color: .red,
-                    icon: "xmark.circle.fill",
-                    showIcon: differentiateWithoutColor
-                )
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(differentiateWithoutColor ? "Feature Active" : "Feature Inactive")
+                        .font(.headline)
+                    Text(differentiateWithoutColor ? "Icons & text shown" : "Color-only mode")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
             }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Status Indicators
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Status Indicators")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack(spacing: 8) {
+                    StatusIndicator(
+                        status: "Success",
+                        color: .green,
+                        icon: "checkmark.circle.fill",
+                        showIcon: differentiateWithoutColor
+                    )
+
+                    StatusIndicator(
+                        status: "Warning",
+                        color: .orange,
+                        icon: "exclamationmark.triangle.fill",
+                        showIcon: differentiateWithoutColor
+                    )
+
+                    StatusIndicator(
+                        status: "Error",
+                        color: .red,
+                        icon: "xmark.circle.fill",
+                        showIcon: differentiateWithoutColor
+                    )
+                }
+            }
+
+            // Form Validation
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Form Validation")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 8) {
+                    // Valid field
+                    HStack {
+                        Text("Name")
+                            .font(.subheadline)
+                            .frame(width: 60, alignment: .leading)
+                        Text("John Doe")
+                            .font(.subheadline)
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.green.opacity(0.1))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.green, lineWidth: differentiateWithoutColor ? 2 : 1)
+                            )
+                        if differentiateWithoutColor {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                        }
+                    }
+
+                    // Invalid field
+                    HStack {
+                        Text("Email")
+                            .font(.subheadline)
+                            .frame(width: 60, alignment: .leading)
+                        Text(email)
+                            .font(.subheadline)
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.red.opacity(0.1))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.red, lineWidth: differentiateWithoutColor ? 2 : 1)
+                            )
+                        if differentiateWithoutColor {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.red)
+                        }
+                    }
+
+                    if differentiateWithoutColor {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                            Text("Invalid email format")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                        }
+                    }
+                }
+            }
+
+            // Selection States
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Selection States")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack(spacing: 8) {
+                    ForEach(["Option 1", "Option 2", "Option 3"], id: \.self) { option in
+                        Button(action: {
+                            selectedOption = option
+                        }) {
+                            HStack(spacing: 6) {
+                                if differentiateWithoutColor && selectedOption == option {
+                                    Image(systemName: "checkmark")
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                }
+                                Text(option.replacingOccurrences(of: "Option ", with: ""))
+                                    .font(.caption)
+                                    .fontWeight(selectedOption == option ? .bold : .regular)
+                            }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                            .frame(maxWidth: .infinity)
+                            .background(selectedOption == option ? color.opacity(0.2) : Color.clear)
+                            .foregroundStyle(selectedOption == option ? color : .primary)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(
+                                        selectedOption == option ? color : Color.gray.opacity(0.3),
+                                        lineWidth: differentiateWithoutColor && selectedOption == option ? 2 : 1
+                                    )
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Progress/Data Visualization
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Progress Indicators")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 8) {
+                    ProgressBarDemo(
+                        label: "Storage",
+                        value: 0.75,
+                        color: .blue,
+                        showLabel: differentiateWithoutColor
+                    )
+                    ProgressBarDemo(
+                        label: "Memory",
+                        value: 0.45,
+                        color: .green,
+                        showLabel: differentiateWithoutColor
+                    )
+                    ProgressBarDemo(
+                        label: "CPU",
+                        value: 0.90,
+                        color: .red,
+                        showLabel: differentiateWithoutColor
+                    )
+                }
+            }
+
+            // Tags/Badges
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Tags & Badges")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack(spacing: 8) {
+                    TagBadge(
+                        text: "Active",
+                        icon: "checkmark.circle.fill",
+                        color: .green,
+                        showIcon: differentiateWithoutColor
+                    )
+                    TagBadge(
+                        text: "Pending",
+                        icon: "clock.fill",
+                        color: .orange,
+                        showIcon: differentiateWithoutColor
+                    )
+                    TagBadge(
+                        text: "Inactive",
+                        icon: "xmark.circle.fill",
+                        color: .gray,
+                        showIcon: differentiateWithoutColor
+                    )
+                }
+            }
+
+            // Info
+            HStack(spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(color)
+                Text("Never rely on color alone to convey information - always provide shapes, icons, or text labels")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
@@ -906,12 +1095,12 @@ struct StatusIndicator: View {
         VStack(spacing: 8) {
             if showIcon {
                 Image(systemName: icon)
-                    .font(.title)
+                    .font(.title2)
                     .foregroundStyle(color)
             } else {
                 Circle()
                     .fill(color)
-                    .frame(width: 30, height: 30)
+                    .frame(width: 28, height: 28)
             }
 
             Text(status)
@@ -919,9 +1108,69 @@ struct StatusIndicator: View {
                 .fontWeight(.semibold)
         }
         .frame(maxWidth: .infinity)
-        .padding()
+        .padding(.vertical, 10)
+        .padding(.horizontal, 8)
         .background(color.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+struct ProgressBarDemo: View {
+    let label: String
+    let value: Double
+    let color: Color
+    let showLabel: Bool
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(label)
+                .font(.caption)
+                .frame(width: 50, alignment: .leading)
+
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.2))
+
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(color)
+                        .frame(width: geometry.size.width * value)
+                }
+            }
+            .frame(height: 8)
+
+            if showLabel {
+                Text("\(Int(value * 100))%")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundStyle(color)
+                    .frame(width: 35, alignment: .trailing)
+            }
+        }
+    }
+}
+
+struct TagBadge: View {
+    let text: String
+    let icon: String
+    let color: Color
+    let showIcon: Bool
+
+    var body: some View {
+        HStack(spacing: 4) {
+            if showIcon {
+                Image(systemName: icon)
+                    .font(.caption2)
+            }
+            Text(text)
+                .font(.caption2)
+                .fontWeight(.medium)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(color.opacity(0.2))
+        .foregroundStyle(color)
+        .clipShape(Capsule())
     }
 }
 
