@@ -88,6 +88,11 @@ struct AccessibilityDetailView: View {
 
                 Divider()
 
+                // Test Playground
+                AccessibilityTestPlayground(feature: feature)
+
+                Divider()
+
                 // Implementation tips
                 VStack(alignment: .leading, spacing: 12) {
                     Text("For Developers")

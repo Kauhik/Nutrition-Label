@@ -19,7 +19,7 @@ struct ContentView: View {
                 feature.shortDescription.localizedCaseInsensitiveContains(searchText)
             }
         }
-    }
+    } 
 
     var body: some View {
         NavigationStack {
@@ -47,7 +47,9 @@ struct ContentView: View {
                     LazyVStack(spacing: 16) {
                         ForEach(filteredFeatures) { feature in
                             NavigationLink(destination: AccessibilityDetailView(feature: feature)) {
-                                AccessibilityCard(feature: feature)
+                                AccessibilityCard(
+                                    feature: feature
+                                )
                             }
                             .buttonStyle(.plain)
                         }
