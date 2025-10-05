@@ -169,30 +169,162 @@ struct VoiceOverTestView: View {
 // MARK: - Voice Control Test
 struct VoiceControlTestView: View {
     let color: Color
-    @State private var text = ""
+    @State private var feedback = "Waiting for voice command..."
+    @State private var likeCount = 0
+    @State private var isToggled = false
+    @State private var textInput = ""
+    @State private var selectedOption = "Option 1"
+
+    let options = ["Option 1", "Option 2", "Option 3"]
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Enable Voice Control and try saying: 'Tap button name' or 'Show numbers' to see item numbers you can tap.")
-                .font(.caption)
+            // Instructions
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Voice Control Commands to Try:")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Label("\"Show names\" - See button labels", systemImage: "tag")
+                    Label("\"Show numbers\" - See item numbers", systemImage: "number")
+                    Label("\"Show grid\" - Show precise tap grid", systemImage: "grid")
+                    Label("\"Tap [name]\" - Tap any button", systemImage: "hand.tap")
+                    Label("\"Type [text]\" - Dictate text", systemImage: "text.cursor")
+                }
+                .font(.caption2)
                 .foregroundStyle(.secondary)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            // Feedback display
+            Text(feedback)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(color)
+                .frame(maxWidth: .infinity)
                 .padding()
-                .background(Color.secondary.opacity(0.1))
+                .background(color.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            Button("Press Me") {
-                text = "Button pressed!"
-            }
-            .foregroundStyle(.white)
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(color)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            // Interactive buttons
+            HStack(spacing: 12) {
+                Button("Like") {
+                    likeCount += 1
+                    feedback = "Liked! Count: \(likeCount)"
+                }
+                .foregroundStyle(.white)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.pink)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
 
-            if !text.isEmpty {
-                Text(text)
-                    .font(.headline)
-                    .foregroundStyle(color)
+                Button("Share") {
+                    feedback = "Share button activated!"
+                }
+                .foregroundStyle(.white)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.blue)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                Button("Save") {
+                    feedback = "Item saved!"
+                }
+                .foregroundStyle(.white)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.green)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+
+            // Toggle control
+            HStack {
+                Text("Notifications")
+                    .font(.body)
+                Spacer()
+                Toggle("", isOn: $isToggled)
+                    .labelsHidden()
+                    .onChange(of: isToggled) { _, newValue in
+                        feedback = newValue ? "Notifications ON" : "Notifications OFF"
+                    }
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            // Text input field
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Say: \"Type your message\"")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                TextField("Tap or speak to type", text: $textInput)
+                    .textFieldStyle(.roundedBorder)
+                    .onChange(of: textInput) { _, newValue in
+                        if !newValue.isEmpty {
+                            feedback = "Text entered: \(newValue)"
+                        }
+                    }
+            }
+
+            // Selection buttons
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Choose an option:")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                HStack(spacing: 8) {
+                    ForEach(options, id: \.self) { option in
+                        Button(option) {
+                            selectedOption = option
+                            feedback = "Selected: \(option)"
+                        }
+                        .font(.caption)
+                        .foregroundStyle(selectedOption == option ? .white : color)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(selectedOption == option ? color : Color.clear)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(color, lineWidth: 1.5)
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                }
+            }
+
+            // Action buttons
+            HStack(spacing: 12) {
+                Button("Reset") {
+                    likeCount = 0
+                    textInput = ""
+                    selectedOption = "Option 1"
+                    isToggled = false
+                    feedback = "Everything reset!"
+                }
+                .foregroundStyle(color)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.clear)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(color, lineWidth: 2)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                Button("Confirm") {
+                    feedback = "Action confirmed! ✓"
+                }
+                .foregroundStyle(.white)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(color)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
         }
         .padding()
