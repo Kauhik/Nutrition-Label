@@ -337,30 +337,294 @@ struct VoiceControlTestView: View {
 struct LargerTextTestView: View {
     let color: Color
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @State private var notificationCount = 3
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Go to Settings > Accessibility > Display & Text Size > Larger Text and adjust the slider. This app automatically responds!")
+            // Instructions
+            Text("Go to Settings > Accessibility > Display & Text Size > Larger Text. Watch elements scale!")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding()
                 .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Dynamic Type Example")
-                    .font(.headline)
+            // Current size indicator
+            VStack(spacing: 8) {
+                HStack {
+                    Image(systemName: "textformat.size")
+                        .font(.title2)
+                        .foregroundStyle(color)
+                    Text("Size")
+                        .font(.headline)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                    Spacer()
+                }
 
-                Text("This text uses Dynamic Type and will scale with your system text size settings. Try increasing the text size in Settings to see it grow!")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-
-                Text("Current size: \(String(describing: dynamicTypeSize))")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                HStack {
+                    Text(isAccessibilitySize ? "Access." : "Standard")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                        .foregroundStyle(isAccessibilitySize ? .green : .blue)
+                    Spacer()
+                    Text("\(String(describing: dynamicTypeSize))")
+                        .font(.caption)
+                        .minimumScaleFactor(0.3)
+                        .lineLimit(1)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding()
             .background(color.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Text style samples
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Styles")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Large Title")
+                        .font(.largeTitle)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(2)
+
+                    Text("Title")
+                        .font(.title)
+                        .minimumScaleFactor(0.5)
+
+                    Text("Headline")
+                        .font(.headline)
+                        .minimumScaleFactor(0.5)
+
+                    Text("Body text scales smoothly")
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text("Callout")
+                        .font(.callout)
+                        .minimumScaleFactor(0.5)
+
+                    Text("Footnote")
+                        .font(.footnote)
+                        .minimumScaleFactor(0.5)
+
+                    Text("Caption")
+                        .font(.caption)
+                        .minimumScaleFactor(0.5)
+                }
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Icons with text labels
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Icons + Text")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+
+                HStack(spacing: 16) {
+                    VStack(spacing: 8) {
+                        Image(systemName: "heart.fill")
+                            .font(.title)
+                            .foregroundStyle(.red)
+                        Text("Favorite")
+                            .font(.caption)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                    }
+
+                    VStack(spacing: 8) {
+                        Image(systemName: "star.fill")
+                            .font(.title)
+                            .foregroundStyle(.yellow)
+                        Text("Featured")
+                            .font(.caption)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                    }
+
+                    VStack(spacing: 8) {
+                        Image(systemName: "bell.fill")
+                            .font(.title)
+                            .foregroundStyle(.orange)
+                        Text("Alerts")
+                            .font(.caption)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // List items with icons
+            VStack(alignment: .leading, spacing: 12) {
+                Text("List Items")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+
+                VStack(spacing: 8) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "envelope.fill")
+                            .foregroundStyle(color)
+                            .imageScale(.large)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("New Message")
+                                .font(.body)
+                                .minimumScaleFactor(0.7)
+                                .lineLimit(1)
+                            Text("5 unread")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .minimumScaleFactor(0.7)
+                                .lineLimit(1)
+                        }
+                        Spacer()
+                        Text("5")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .minimumScaleFactor(0.5)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(color)
+                            .foregroundStyle(.white)
+                            .clipShape(Capsule())
+                    }
+
+                    Divider()
+
+                    HStack(spacing: 12) {
+                        Image(systemName: "bell.badge.fill")
+                            .foregroundStyle(color)
+                            .imageScale(.large)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Notifications")
+                                .font(.body)
+                                .minimumScaleFactor(0.7)
+                                .lineLimit(1)
+                            Text("\(notificationCount) alerts")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .minimumScaleFactor(0.7)
+                                .lineLimit(1)
+                        }
+                        Spacer()
+                    }
+                }
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Buttons with different sizes
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Buttons")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+
+                VStack(spacing: 8) {
+                    Button(action: { notificationCount += 1 }) {
+                        HStack {
+                            Image(systemName: "plus.circle.fill")
+                            Text("Add Alert")
+                                .minimumScaleFactor(0.7)
+                                .lineLimit(1)
+                        }
+                        .font(.body)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(color)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+
+                    Button(action: { notificationCount = 0 }) {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("Clear")
+                                .minimumScaleFactor(0.7)
+                                .lineLimit(1)
+                        }
+                        .font(.body)
+                        .foregroundStyle(color)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.clear)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(color, lineWidth: 2)
+                        )
+                    }
+
+                    HStack(spacing: 8) {
+                        Button("Cancel") {
+                            notificationCount = 3
+                        }
+                        .font(.subheadline)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.secondary.opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                        Button("OK") {
+                            notificationCount = 3
+                        }
+                        .font(.subheadline)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(color)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                }
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Multiline text wrapping
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Text Wrap")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+
+                Text("This shows how text wraps when you scale text size. Layout adapts to fit larger text while staying readable.")
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .lineSpacing(4)
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.05))
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .padding()
