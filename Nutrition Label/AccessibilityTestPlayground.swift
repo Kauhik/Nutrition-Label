@@ -640,36 +640,211 @@ struct DarkInterfaceTestView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("The app automatically adapts when you enable Dark Mode in Settings > Display & Brightness.")
+            Text("Toggle Dark Mode in Settings > Display & Brightness to see all UI elements adapt instantly.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding()
                 .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            HStack(spacing: 20) {
-                VStack {
-                    Image(systemName: colorScheme == .dark ? "moon.fill" : "sun.max.fill")
-                        .font(.largeTitle)
-                        .foregroundStyle(color)
+            // Current Mode Indicator
+            HStack(spacing: 12) {
+                Image(systemName: colorScheme == .dark ? "moon.fill" : "sun.max.fill")
+                    .font(.title)
+                    .foregroundStyle(color)
 
-                    Text(colorScheme == .dark ? "Dark Mode" : "Light Mode")
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(colorScheme == .dark ? "Dark Mode Active" : "Light Mode Active")
+                        .font(.headline)
+                    Text("All elements adapt automatically")
                         .font(.caption)
-                        .fontWeight(.semibold)
-
-                    Text("Currently Active")
-                        .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                Spacer()
             }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Semantic Colors Section
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Semantic Colors")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 8) {
+                    ColorRow(label: "Primary", colorStyle: .primary)
+                    ColorRow(label: "Secondary", colorStyle: .secondary)
+                    ColorRow(label: "Tertiary", colorStyle: .tertiary)
+                }
+            }
+
+            // Background Layers
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Background Layers")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack(spacing: 8) {
+                    VStack(spacing: 4) {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color(uiColor: .systemBackground))
+                            .frame(height: 50)
+                            .overlay(
+                                Text("Base")
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                            )
+                        Text("Background")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    VStack(spacing: 4) {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color(uiColor: .secondarySystemBackground))
+                            .frame(height: 50)
+                            .overlay(
+                                Text("Card")
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                            )
+                        Text("Secondary")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    VStack(spacing: 4) {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color(uiColor: .tertiarySystemBackground))
+                            .frame(height: 50)
+                            .overlay(
+                                Text("Fill")
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                            )
+                        Text("Tertiary")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            // UI Elements
+            VStack(alignment: .leading, spacing: 8) {
+                Text("UI Elements")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 8) {
+                    // Button
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "star.fill")
+                            Text("Accent Button")
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accentColor)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+
+                    // Card
+                    HStack {
+                        Image(systemName: "photo")
+                            .font(.title2)
+                            .foregroundStyle(color)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Card Title")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                            Text("Subtitle adapts to color scheme")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding()
+                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    // Grouped Cells
+                    VStack(spacing: 1) {
+                        ListRowDemo(icon: "bell.fill", title: "Notifications", value: "On")
+                        Divider()
+                        ListRowDemo(icon: "lock.fill", title: "Privacy", value: "Enabled")
+                    }
+                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+            }
+
+            // Color Contrast Info
+            HStack(spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(color)
+                Text(colorScheme == .dark ?
+                    "Dark mode reduces glare and eye strain in low-light environments" :
+                    "Light mode provides better visibility in bright environments")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+struct ColorRow<S: ShapeStyle>: View {
+    let label: String
+    let colorStyle: S
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.caption)
+                .frame(width: 70, alignment: .leading)
+
+            Rectangle()
+                .fill(colorStyle)
+                .frame(height: 30)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+
+            Text("Text adapts")
+                .font(.caption)
+                .foregroundStyle(colorStyle)
+        }
+    }
+}
+
+struct ListRowDemo: View {
+    let icon: String
+    let title: String
+    let value: String
+
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundStyle(.blue)
+                .frame(width: 24)
+            Text(title)
+                .font(.subheadline)
+            Spacer()
+            Text(value)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 8)
     }
 }
 
