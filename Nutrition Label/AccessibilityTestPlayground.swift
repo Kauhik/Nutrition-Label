@@ -1181,34 +1181,312 @@ struct ContrastTestView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Enable Increase Contrast in Accessibility settings. The app automatically adjusts backgrounds!")
+            Text("Toggle Increase Contrast in Accessibility > Display & Text Size to see enhanced contrast ratios.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding()
                 .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            VStack(spacing: 12) {
-                HStack {
-                    Text("Current Contrast:")
-                        .font(.headline)
-                    Spacer()
-                    Text(contrast == .increased ? "Increased ✓" : "Standard")
-                        .font(.headline)
-                        .foregroundStyle(contrast == .increased ? .green : .secondary)
-                }
+            // Feature Status
+            HStack(spacing: 12) {
+                Image(systemName: contrast == .increased ? "circle.lefthalf.filled" : "circle")
+                    .font(.title)
+                    .foregroundStyle(color)
 
-                Text("Notice how background opacity increases when you enable this feature for better visibility.")
-                    .font(.body)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(contrast == .increased ? "Increased Contrast" : "Standard Contrast")
+                        .font(.headline)
+                    Text(contrast == .increased ? "Enhanced visibility active" : "Normal mode")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Text Contrast Examples
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Text Contrast")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 12) {
+                    TextContrastRow(
+                        label: "Primary",
+                        textStyle: .primary,
+                        contrast: contrast
+                    )
+                    TextContrastRow(
+                        label: "Secondary",
+                        textStyle: .secondary,
+                        contrast: contrast
+                    )
+                    TextContrastRow(
+                        label: "Tertiary",
+                        textStyle: .tertiary,
+                        contrast: contrast
+                    )
+                }
+                .padding()
+                .background(Color(uiColor: .systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+
+            // Button Contrast
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Button & Interactive Elements")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 8) {
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "star.fill")
+                            Text("Primary Button")
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(color)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "heart")
+                            Text("Secondary Button")
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
+                        .foregroundStyle(color)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(color, lineWidth: contrast == .increased ? 2 : 1)
+                        )
+                    }
+                }
+            }
+
+            // Background Layers
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Background Layers")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 8) {
+                    BackgroundLayerDemo(
+                        title: "Primary Background",
+                        backgroundColor: Color(uiColor: .systemBackground),
+                        contrast: contrast
+                    )
+                    BackgroundLayerDemo(
+                        title: "Secondary Background",
+                        backgroundColor: Color(uiColor: .secondarySystemBackground),
+                        contrast: contrast
+                    )
+                    BackgroundLayerDemo(
+                        title: "Tertiary Background",
+                        backgroundColor: Color(uiColor: .tertiarySystemBackground),
+                        contrast: contrast
+                    )
+                }
+            }
+
+            // Separators & Borders
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Separators & Borders")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 1) {
+                    HStack {
+                        Text("Item 1")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding()
+                    .background(Color(uiColor: .secondarySystemBackground))
+
+                    Divider()
+                        .background(Color.primary.opacity(contrast == .increased ? 0.3 : 0.2))
+
+                    HStack {
+                        Text("Item 2")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding()
+                    .background(Color(uiColor: .secondarySystemBackground))
+
+                    Divider()
+                        .background(Color.primary.opacity(contrast == .increased ? 0.3 : 0.2))
+
+                    HStack {
+                        Text("Item 3")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding()
+                    .background(Color(uiColor: .secondarySystemBackground))
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+
+            // Icons & Symbols
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Icons & Symbols")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack(spacing: 16) {
+                    IconContrastDemo(icon: "house.fill", label: "Home", color: .blue, contrast: contrast)
+                    IconContrastDemo(icon: "bell.fill", label: "Alerts", color: .orange, contrast: contrast)
+                    IconContrastDemo(icon: "person.fill", label: "Profile", color: .purple, contrast: contrast)
+                    IconContrastDemo(icon: "gear", label: "Settings", color: .gray, contrast: contrast)
+                }
+            }
+
+            // Card Example
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Card Components")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack(spacing: 12) {
+                    Image(systemName: "photo.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(color)
+                        .frame(width: 60, height: 60)
+                        .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Card Title")
+                            .font(.headline)
+                        Text("Subtitle with secondary text")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Text("Additional details in tertiary")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    Spacer()
+                }
+                .padding()
+                .background(Color(uiColor: .secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.gray.opacity(contrast == .increased ? 0.3 : 0.15), lineWidth: 1)
+                )
+            }
+
+            // WCAG Info
+            HStack(spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(color)
+                Text(contrast == .increased ?
+                    "Enhanced contrast improves readability for users with low vision" :
+                    "Standard contrast follows WCAG AA guidelines (4.5:1 for text)")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .padding()
-            .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+struct TextContrastRow<S: ShapeStyle>: View {
+    let label: String
+    let textStyle: S
+    let contrast: ColorSchemeContrast
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.caption)
+                .frame(width: 70, alignment: .leading)
+
+            Text("The quick brown fox jumps")
+                .font(.subheadline)
+                .foregroundStyle(textStyle)
+
+            Spacer()
+
+            Text(contrast == .increased ? "AAA" : "AA")
+                .font(.caption2)
+                .fontWeight(.bold)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(contrast == .increased ? Color.green.opacity(0.2) : Color.blue.opacity(0.2))
+                .foregroundStyle(contrast == .increased ? .green : .blue)
+                .clipShape(Capsule())
+        }
+    }
+}
+
+struct BackgroundLayerDemo: View {
+    let title: String
+    let backgroundColor: Color
+    let contrast: ColorSchemeContrast
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption)
+                .fontWeight(.medium)
+            Text("Contrast: \(contrast == .increased ? "Enhanced" : "Standard")")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(backgroundColor)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.gray.opacity(contrast == .increased ? 0.4 : 0.2), lineWidth: 1)
+        )
+    }
+}
+
+struct IconContrastDemo: View {
+    let icon: String
+    let label: String
+    let color: Color
+    let contrast: ColorSchemeContrast
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(color)
+                .frame(width: 50, height: 50)
+                .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
+                .clipShape(Circle())
+
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
     }
 }
 
