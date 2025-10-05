@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct AccessibilityTestPlayground: View {
     let feature: AccessibilityFeature
@@ -1735,39 +1736,167 @@ struct ReducedMotionTestView: View {
 // MARK: - Captions Test
 struct CaptionsTestView: View {
     let color: Color
+    @State private var player: AVPlayer?
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Enable Closed Captions in supported video apps to see text for dialogue and sounds.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            // Instructions
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(color)
+                    Text("Caption Style Settings")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                }
 
-            VStack(spacing: 12) {
-                Image(systemName: "captions.bubble")
-                    .font(.system(size: 50))
-                    .foregroundStyle(color)
-
-                Text("[Background Music Playing]")
-                    .font(.caption)
-                    .padding(8)
-                    .background(Color.black.opacity(0.7))
-                    .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-
-                Text("Captions appear in video content")
+                Text("Go to Settings > Accessibility > Subtitles & Captioning > Style to customize how captions appear. Changes apply instantly to the video below!")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .padding()
-            .background(color.opacity(0.1))
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            // Native Video Player with Apple Captions
+            VStack(spacing: 8) {
+                if let player = player {
+                    VideoPlayer(player: player)
+                        .aspectRatio(16/9, contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.secondary.opacity(0.2))
+                            .aspectRatio(16/9, contentMode: .fit)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                        VStack(spacing: 8) {
+                            ProgressView()
+                            Text("Loading video...")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                Text("Apple system captions - respects your Style settings")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding()
+            .background(Color(uiColor: .secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Caption Types Legend
+            VStack(alignment: .leading, spacing: 8) {
+                Text("What Captions Include")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 6) {
+                    CaptionTypeBadge(
+                        icon: "text.bubble.fill",
+                        label: "Dialogue",
+                        description: "All spoken words and conversation",
+                        color: .blue
+                    )
+                    CaptionTypeBadge(
+                        icon: "speaker.wave.2.fill",
+                        label: "Sound Effects",
+                        description: "[Music playing], [Door opens], [Thunder]",
+                        color: .orange
+                    )
+                    CaptionTypeBadge(
+                        icon: "person.fill",
+                        label: "Speaker Identification",
+                        description: "NARRATOR: or character names",
+                        color: .purple
+                    )
+                    CaptionTypeBadge(
+                        icon: "music.note",
+                        label: "Music & Tone",
+                        description: "[Upbeat music], [Dramatic tension]",
+                        color: .green
+                    )
+                }
+            }
+
+            // Info
+            HStack(spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(color)
+                Text("Captions are essential for deaf/hard-of-hearing users and helpful in sound-sensitive environments or when learning a new language")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+        .onAppear {
+            setupPlayer()
+        }
+        .onDisappear {
+            player?.pause()
+            player = nil
+        }
+    }
+
+    func setupPlayer() {
+        // Using Apple's HLS test stream with built-in captions
+        guard let url = URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8") else {
+            return
+        }
+
+        player = AVPlayer(url: url)
+
+        // Enable captions - they will use system styling from Settings
+        if let player = player {
+            let group = player.currentItem?.asset.mediaSelectionGroup(forMediaCharacteristic: .legible)
+            if let group = group {
+                let options = AVMediaSelectionGroup.mediaSelectionOptions(from: group.options, with: Locale.current)
+                if let option = options.first {
+                    player.currentItem?.select(option, in: group)
+                }
+            }
+        }
+    }
+}
+
+struct CaptionTypeBadge: View {
+    let icon: String
+    let label: String
+    let description: String
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .font(.caption)
+                .foregroundStyle(color)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                Text(description)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(color.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
 
