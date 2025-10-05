@@ -19,7 +19,15 @@ struct ContentView: View {
                 feature.shortDescription.localizedCaseInsensitiveContains(searchText)
             }
         }
-    } 
+    }
+
+    var groupedFeatures: [(category: AccessibilityCategory, features: [AccessibilityFeature])] {
+        let filtered = filteredFeatures
+        return AccessibilityCategory.allCases.compactMap { category in
+            let featuresInCategory = filtered.filter { $0.category == category }
+            return featuresInCategory.isEmpty ? nil : (category, featuresInCategory)
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -43,20 +51,35 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
 
-                    // Feature cards
-                    LazyVStack(spacing: 16) {
-                        ForEach(filteredFeatures) { feature in
-                            NavigationLink(destination: AccessibilityDetailView(feature: feature)) {
-                                AccessibilityCard(
-                                    feature: feature
-                                )
+                    // Grouped feature cards
+                    LazyVStack(alignment: .leading, spacing: 32) {
+                        ForEach(groupedFeatures, id: \.category) { group in
+                            VStack(alignment: .leading, spacing: 12) {
+                                // Category header
+                                HStack(spacing: 8) {
+                                    Image(systemName: group.category.icon)
+                                        .foregroundStyle(group.category.color)
+                                    Text(group.category.rawValue)
+                                        .font(.title3)
+                                        .fontWeight(.semibold)
+                                }
+                                .padding(.horizontal)
+                                .padding(.top, 8)
+
+                                // Features in this category
+                                ForEach(group.features) { feature in
+                                    NavigationLink(destination: AccessibilityDetailView(feature: feature)) {
+                                        AccessibilityCard(feature: feature)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.horizontal)
                 }
             }
+            .background(Color(uiColor: .systemGroupedBackground))
             .searchable(text: $searchText, prompt: "Search features")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -85,11 +108,6 @@ struct AccessibilityCard: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
-
-                // Platform count
-                Text("\(feature.platforms.count) platforms")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
             }
 
             Spacer()

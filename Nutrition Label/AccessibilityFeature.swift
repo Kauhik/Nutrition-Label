@@ -7,6 +7,31 @@
 
 import SwiftUI
 
+enum AccessibilityCategory: String, CaseIterable {
+    case vision = "Vision"
+    case hearing = "Hearing"
+    case motor = "Motor"
+    case motion = "Motion"
+
+    var icon: String {
+        switch self {
+        case .vision: return "eye.fill"
+        case .hearing: return "ear.fill"
+        case .motor: return "hand.raised.fill"
+        case .motion: return "figure.run"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .vision: return .blue
+        case .hearing: return .green
+        case .motor: return .orange
+        case .motion: return .purple
+        }
+    }
+}
+
 struct AccessibilityFeature: Identifiable, Hashable {
     let id = UUID()
     let name: String
@@ -16,6 +41,7 @@ struct AccessibilityFeature: Identifiable, Hashable {
     let platforms: [String]
     let color: Color
     let activationSteps: [String]
+    let category: AccessibilityCategory
 
     static let allFeatures: [AccessibilityFeature] = [
         AccessibilityFeature(
@@ -42,7 +68,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap VoiceOver",
                 "Toggle VoiceOver on",
                 "Quick tip: Triple-click the side button to toggle VoiceOver on/off"
-            ]
+            ],
+            category: .vision
         ),
 
         AccessibilityFeature(
@@ -69,7 +96,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap Voice Control",
                 "Tap Set Up Voice Control",
                 "Follow the on-screen instructions to complete setup"
-            ]
+            ],
+            category: .motor
         ),
 
         AccessibilityFeature(
@@ -96,7 +124,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap Display & Text Size",
                 "Tap Larger Text",
                 "Drag the slider to adjust text size to your preference"
-            ]
+            ],
+            category: .vision
         ),
 
         AccessibilityFeature(
@@ -122,7 +151,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap Display & Brightness",
                 "Under Appearance, select Dark",
                 "Optional: Enable Automatic to switch between Light and Dark based on time"
-            ]
+            ],
+            category: .vision
         ),
 
         AccessibilityFeature(
@@ -148,7 +178,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap Accessibility",
                 "Tap Display & Text Size",
                 "Toggle on Differentiate Without Color"
-            ]
+            ],
+            category: .vision
         ),
 
         AccessibilityFeature(
@@ -174,7 +205,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap Accessibility",
                 "Tap Display & Text Size",
                 "Toggle on Increase Contrast"
-            ]
+            ],
+            category: .vision
         ),
 
         AccessibilityFeature(
@@ -200,7 +232,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap Accessibility",
                 "Tap Motion",
                 "Toggle on Reduce Motion"
-            ]
+            ],
+            category: .motion
         ),
 
         AccessibilityFeature(
@@ -227,7 +260,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap Subtitles & Captioning",
                 "Toggle on Closed Captions + SDH",
                 "Tap Style to customize caption appearance"
-            ]
+            ],
+            category: .hearing
         ),
 
         AccessibilityFeature(
@@ -254,7 +288,8 @@ struct AccessibilityFeature: Identifiable, Hashable {
                 "Tap Audio Descriptions",
                 "Toggle on Audio Descriptions",
                 "Note: Content must support audio descriptions for this feature to work"
-            ]
+            ],
+            category: .hearing
         )
     ]
 }
