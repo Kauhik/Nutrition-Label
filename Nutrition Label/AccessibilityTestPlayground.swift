@@ -1495,47 +1495,236 @@ struct ReducedMotionTestView: View {
     let color: Color
     @Environment(\.accessibilityReduceMotion) var reduceMotion
     @State private var isAnimating = false
+    @State private var showCard = true
+    @State private var animationTask: Task<Void, Never>? = nil
+    @State private var isRunning = false
+    @State private var remainingTime = 0
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Enable Reduce Motion in Accessibility settings. Tap the button below to see the difference!")
+            Text("Toggle Reduce Motion in Accessibility > Motion to see animations adapt or disable.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding()
                 .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            HStack {
-                Text("Status:")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                Spacer()
-                Text(reduceMotion ? "ON - No animations" : "OFF - Animations active")
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundStyle(reduceMotion ? .green : .secondary)
-            }
-            .padding(.horizontal)
+            // Feature Status
+            HStack(spacing: 12) {
+                Image(systemName: reduceMotion ? "checkmark.circle.fill" : "circle")
+                    .font(.title)
+                    .foregroundStyle(color)
 
-            Button("Toggle Animation") {
-                isAnimating.toggle()
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(reduceMotion ? "Reduced Motion Active" : "Animations Enabled")
+                        .font(.headline)
+                    Text(reduceMotion ? "Minimal animations" : "Full animations")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
             }
-            .foregroundStyle(.white)
             .padding()
-            .frame(maxWidth: .infinity)
-            .background(color)
+            .background(Color.secondary.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 12))
 
-            Circle()
-                .fill(color)
-                .frame(width: 60, height: 60)
-                .offset(x: isAnimating ? 100 : -100)
-                .animation(reduceMotion ? .none : .spring(duration: 0.8), value: isAnimating)
+            Button(action: {
+                // Ignore if already running
+                guard !isRunning else { return }
 
-            Text(reduceMotion ? "Circle moves instantly (no spring animation)" : "Circle animates with spring effect")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+                isRunning = true
+                remainingTime = 30
+
+                // Start countdown timer (updates every second)
+                let timerTask = Task {
+                    let startTime = Date()
+
+                    while Date().timeIntervalSince(startTime) < 30 {
+                        remainingTime = max(0, 30 - Int(Date().timeIntervalSince(startTime)))
+                        try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+                    }
+                }
+
+                // Start looping animations for 30 seconds
+                animationTask = Task {
+                    let startTime = Date()
+
+                    while Date().timeIntervalSince(startTime) < 30 {
+                        // Toggle animations
+                        isAnimating.toggle()
+
+                        // Wait before next toggle (creates loop effect)
+                        try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+
+                        // Toggle card
+                        showCard.toggle()
+
+                        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+                    }
+
+                    // Wait for timer to finish
+                    await timerTask.value
+
+                    // Reset everything after 30 seconds
+                    isAnimating = false
+                    showCard = true
+                    remainingTime = 0
+                    isRunning = false
+                }
+            }) {
+                HStack {
+                    Image(systemName: isRunning ? "clock.fill" : "play.fill")
+                    if isRunning {
+                        Text("Running (\(remainingTime)s)")
+                            .fontWeight(.semibold)
+                    } else {
+                        Text("Trigger Animations")
+                            .fontWeight(.semibold)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(isRunning ? Color.gray : color)
+                .foregroundStyle(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .opacity(isRunning ? 0.6 : 1.0)
+            }
+            .disabled(isRunning)
+
+            // Movement Animation
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Movement & Spring")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack {
+                    Spacer()
+                    Circle()
+                        .fill(color)
+                        .frame(width: 50, height: 50)
+                        .offset(x: isAnimating ? 80 : -80)
+                        .animation(reduceMotion ? .none : .spring(duration: 0.8, bounce: 0.3), value: isAnimating)
+                    Spacer()
+                }
+                .frame(height: 60)
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                Text(reduceMotion ? "Instant position change" : "Bouncy spring animation")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Scale & Pulse Animation
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Scale & Pulse")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack {
+                    Spacer()
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 40))
+                        .foregroundStyle(.red)
+                        .scaleEffect(isAnimating ? 1.3 : 1.0)
+                        .animation(reduceMotion ? .none : .easeInOut(duration: 0.6).repeatCount(3, autoreverses: true), value: isAnimating)
+                    Spacer()
+                }
+                .frame(height: 70)
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                Text(reduceMotion ? "No scaling animation" : "Pulsing scale effect")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Rotation Animation
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Rotation")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                HStack {
+                    Spacer()
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 40))
+                        .foregroundStyle(color)
+                        .rotationEffect(.degrees(isAnimating ? 360 : 0))
+                        .animation(reduceMotion ? .none : .linear(duration: 1.0), value: isAnimating)
+                    Spacer()
+                }
+                .frame(height: 70)
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                Text(reduceMotion ? "No rotation" : "360° rotation")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Opacity Transition (Crossfade)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Opacity Transition")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                ZStack {
+                    if showCard {
+                        VStack(spacing: 8) {
+                            Image(systemName: "sun.max.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(.orange)
+                            Text("Day Mode")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.orange.opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .transition(reduceMotion ? .identity : .opacity)
+                    } else {
+                        VStack(spacing: 8) {
+                            Image(systemName: "moon.stars.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(.blue)
+                            Text("Night Mode")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue.opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .transition(reduceMotion ? .identity : .opacity)
+                    }
+                }
+                .frame(height: 100)
+                .onTapGesture {
+                    withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.4)) {
+                        showCard.toggle()
+                    }
+                }
+
+                Text(reduceMotion ? "Instant switch" : "Smooth crossfade")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Info
+            HStack(spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(color)
+                Text(reduceMotion ?
+                    "Animations are minimized to prevent motion sickness and distraction" :
+                    "Full animations enhance the user experience")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
