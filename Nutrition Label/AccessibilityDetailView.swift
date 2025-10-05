@@ -104,6 +104,14 @@ struct AccessibilityDetailView: View {
                         .foregroundStyle(.secondary)
                         .lineSpacing(4)
                 }
+
+                // Footer
+                Text("Kaushik")
+                    .font(.footnote)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 16)
+                    .padding(.bottom, 8)
             }
             .padding()
         }

@@ -32,7 +32,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 0) {
                     // Header
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Accessibility")
@@ -49,7 +49,8 @@ struct ContentView: View {
                             .padding(.top, 4)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.bottom, 20)
 
                     // Grouped feature cards
                     LazyVStack(alignment: .leading, spacing: 32) {
