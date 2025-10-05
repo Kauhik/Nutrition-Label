@@ -1903,37 +1903,176 @@ struct CaptionTypeBadge: View {
 // MARK: - Audio Descriptions Test
 struct AudioDescriptionsTestView: View {
     let color: Color
+    @State private var player: AVPlayer?
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Enable Audio Descriptions in supported video content to hear narrated descriptions of visual elements.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            // Instructions
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(color)
+                    Text("Audio Description Settings")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                }
 
-            VStack(spacing: 12) {
-                Image(systemName: "waveform")
-                    .font(.system(size: 50))
-                    .foregroundStyle(color)
-
-                Text("🔊 'A person walks through a sunny park...'")
-                    .font(.caption)
-                    .italic()
-                    .foregroundStyle(.secondary)
-
-                Text("Audio descriptions narrate visual scenes")
+                Text("Go to Settings > Accessibility > Audio Descriptions and toggle it on. Then play the video below to hear narrated descriptions of visual elements.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .padding()
-            .background(color.opacity(0.1))
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            // Video Player
+            VStack(spacing: 8) {
+                if let player = player {
+                    VideoPlayer(player: player)
+                        .aspectRatio(16/9, contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                } else {
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.secondary.opacity(0.2))
+                            .aspectRatio(16/9, contentMode: .fit)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                        VStack(spacing: 8) {
+                            ProgressView()
+                            Text("Loading video...")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                Text("Sample video - audio descriptions narrate visual scenes between dialogue")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding()
+            .background(Color(uiColor: .secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // What Gets Described
+            VStack(alignment: .leading, spacing: 8) {
+                Text("What Gets Described")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                VStack(spacing: 6) {
+                    DescriptionTypeBadge(
+                        icon: "person.fill",
+                        label: "Characters",
+                        description: "Who appears, what they wear, expressions",
+                        color: .blue
+                    )
+                    DescriptionTypeBadge(
+                        icon: "location.fill",
+                        label: "Settings",
+                        description: "Location, time of day, environment",
+                        color: .green
+                    )
+                    DescriptionTypeBadge(
+                        icon: "figure.walk",
+                        label: "Actions",
+                        description: "Movements, gestures, interactions",
+                        color: .orange
+                    )
+                    DescriptionTypeBadge(
+                        icon: "face.smiling",
+                        label: "Emotions",
+                        description: "Facial expressions, body language",
+                        color: .purple
+                    )
+                    DescriptionTypeBadge(
+                        icon: "text.bubble.fill",
+                        label: "Text & Graphics",
+                        description: "On-screen text, titles, important visuals",
+                        color: .pink
+                    )
+                }
+            }
+
+            // Info
+            HStack(spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(color)
+                Text("Audio descriptions are essential for blind and low-vision users to understand visual storytelling and context in videos")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+        .onAppear {
+            setupPlayer()
+        }
+        .onDisappear {
+            player?.pause()
+            player = nil
+        }
+    }
+
+    func setupPlayer() {
+        // Using a different Apple sample video
+        guard let url = URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_16x9/bipbop_16x9_variant.m3u8") else {
+            return
+        }
+
+        player = AVPlayer(url: url)
+
+        // Enable audio descriptions if available and user has them enabled
+        if let player = player {
+            let group = player.currentItem?.asset.mediaSelectionGroup(forMediaCharacteristic: .audible)
+            if let group = group {
+                // Try to select audio description track if available
+                let options = group.options.filter { option in
+                    option.hasMediaCharacteristic(.describesVideoForAccessibility)
+                }
+                if let audioDescriptionOption = options.first {
+                    player.currentItem?.select(audioDescriptionOption, in: group)
+                }
+            }
+        }
+    }
+}
+
+struct DescriptionTypeBadge: View {
+    let icon: String
+    let label: String
+    let description: String
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .font(.caption)
+                .foregroundStyle(color)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                Text(description)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(color.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
 
