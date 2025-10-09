@@ -38,7 +38,7 @@ struct AccessibilityFeature: Identifiable, Hashable {
     let icon: String
     let shortDescription: String
     let fullDescription: String
-    let platforms: [String]
+    let platforms: [String      ]
     let color: Color
     let activationSteps: [String]
     let category: AccessibilityCategory

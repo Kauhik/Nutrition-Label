@@ -438,38 +438,71 @@ struct LargerTextTestView: View {
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
 
-                HStack(spacing: 16) {
-                    VStack(spacing: 8) {
-                        Image(systemName: "heart.fill")
-                            .font(.title)
-                            .foregroundStyle(.red)
-                        Text("Favorite")
-                            .font(.caption)
-                            .minimumScaleFactor(0.5)
-                            .lineLimit(1)
-                    }
+                // Use VStack at accessibility sizes for better readability
+                if isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "heart.fill")
+                                .font(.title)
+                                .foregroundStyle(.red)
+                            Text("Favorite")
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
 
-                    VStack(spacing: 8) {
-                        Image(systemName: "star.fill")
-                            .font(.title)
-                            .foregroundStyle(.yellow)
-                        Text("Featured")
-                            .font(.caption)
-                            .minimumScaleFactor(0.5)
-                            .lineLimit(1)
-                    }
+                        HStack(spacing: 12) {
+                            Image(systemName: "star.fill")
+                                .font(.title)
+                                .foregroundStyle(.yellow)
+                            Text("Featured")
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
 
-                    VStack(spacing: 8) {
-                        Image(systemName: "bell.fill")
-                            .font(.title)
-                            .foregroundStyle(.orange)
-                        Text("Alerts")
-                            .font(.caption)
-                            .minimumScaleFactor(0.5)
-                            .lineLimit(1)
+                        HStack(spacing: 12) {
+                            Image(systemName: "bell.fill")
+                                .font(.title)
+                                .foregroundStyle(.orange)
+                            Text("Alerts")
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    HStack(spacing: 16) {
+                        VStack(spacing: 8) {
+                            Image(systemName: "heart.fill")
+                                .font(.title)
+                                .foregroundStyle(.red)
+                            Text("Favorite")
+                                .font(.caption)
+                                .minimumScaleFactor(0.5)
+                                .lineLimit(1)
+                        }
+
+                        VStack(spacing: 8) {
+                            Image(systemName: "star.fill")
+                                .font(.title)
+                                .foregroundStyle(.yellow)
+                            Text("Featured")
+                                .font(.caption)
+                                .minimumScaleFactor(0.5)
+                                .lineLimit(1)
+                        }
+
+                        VStack(spacing: 8) {
+                            Image(systemName: "bell.fill")
+                                .font(.title)
+                                .foregroundStyle(.orange)
+                            Text("Alerts")
+                                .font(.caption)
+                                .minimumScaleFactor(0.5)
+                                .lineLimit(1)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
             }
             .padding()
             .background(Color.secondary.opacity(0.05))
@@ -484,51 +517,88 @@ struct LargerTextTestView: View {
                     .lineLimit(1)
 
                 VStack(spacing: 8) {
-                    HStack(spacing: 12) {
-                        Image(systemName: "envelope.fill")
-                            .foregroundStyle(color)
-                            .imageScale(.large)
-                        VStack(alignment: .leading, spacing: 2) {
+                    // New Message item
+                    if isAccessibilitySize {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text("New Message")
                                 .font(.body)
-                                .minimumScaleFactor(0.7)
-                                .lineLimit(1)
-                            Text("5 unread")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .minimumScaleFactor(0.7)
-                                .lineLimit(1)
+                                .fixedSize(horizontal: false, vertical: true)
+                            HStack {
+                                Text("5 unread")
+                                    .font(.body)
+                                    .foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                Spacer()
+                                Text("5")
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .background(color)
+                                    .foregroundStyle(.white)
+                                    .clipShape(Capsule())
+                            }
                         }
-                        Spacer()
-                        Text("5")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .minimumScaleFactor(0.5)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(color)
-                            .foregroundStyle(.white)
-                            .clipShape(Capsule())
+                    } else {
+                        HStack(spacing: 12) {
+                            Image(systemName: "envelope.fill")
+                                .foregroundStyle(color)
+                                .imageScale(.large)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("New Message")
+                                    .font(.body)
+                                    .minimumScaleFactor(0.7)
+                                    .lineLimit(1)
+                                Text("5 unread")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .minimumScaleFactor(0.7)
+                                    .lineLimit(1)
+                            }
+                            Spacer()
+                            Text("5")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .minimumScaleFactor(0.5)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(color)
+                                .foregroundStyle(.white)
+                                .clipShape(Capsule())
+                        }
                     }
 
                     Divider()
 
-                    HStack(spacing: 12) {
-                        Image(systemName: "bell.badge.fill")
-                            .foregroundStyle(color)
-                            .imageScale(.large)
-                        VStack(alignment: .leading, spacing: 2) {
+                    // Notifications item
+                    if isAccessibilitySize {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text("Notifications")
                                 .font(.body)
-                                .minimumScaleFactor(0.7)
-                                .lineLimit(1)
+                                .fixedSize(horizontal: false, vertical: true)
                             Text("\(notificationCount) alerts")
-                                .font(.caption)
+                                .font(.body)
                                 .foregroundStyle(.secondary)
-                                .minimumScaleFactor(0.7)
-                                .lineLimit(1)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                        Spacer()
+                    } else {
+                        HStack(spacing: 12) {
+                            Image(systemName: "bell.badge.fill")
+                                .foregroundStyle(color)
+                                .imageScale(.large)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Notifications")
+                                    .font(.body)
+                                    .minimumScaleFactor(0.7)
+                                    .lineLimit(1)
+                                Text("\(notificationCount) alerts")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .minimumScaleFactor(0.7)
+                                    .lineLimit(1)
+                            }
+                            Spacer()
+                        }
                     }
                 }
             }
@@ -549,8 +619,7 @@ struct LargerTextTestView: View {
                         HStack {
                             Image(systemName: "plus.circle.fill")
                             Text("Add Alert")
-                                .minimumScaleFactor(0.7)
-                                .lineLimit(1)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .font(.body)
                         .foregroundStyle(.white)
@@ -564,8 +633,7 @@ struct LargerTextTestView: View {
                         HStack {
                             Image(systemName: "trash")
                             Text("Clear")
-                                .minimumScaleFactor(0.7)
-                                .lineLimit(1)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .font(.body)
                         .foregroundStyle(color)
@@ -578,31 +646,59 @@ struct LargerTextTestView: View {
                         )
                     }
 
-                    HStack(spacing: 8) {
-                        Button("Cancel") {
-                            notificationCount = 3
-                        }
-                        .font(.subheadline)
-                        .minimumScaleFactor(0.5)
-                        .lineLimit(1)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.secondary.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    // Switch to VStack at accessibility sizes
+                    if isAccessibilitySize {
+                        VStack(spacing: 8) {
+                            Button("Cancel") {
+                                notificationCount = 3
+                            }
+                            .font(.body)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.secondary.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
 
-                        Button("OK") {
-                            notificationCount = 3
+                            Button("OK") {
+                                notificationCount = 3
+                            }
+                            .font(.body)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(color)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
-                        .font(.subheadline)
-                        .minimumScaleFactor(0.5)
-                        .lineLimit(1)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(color)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    } else {
+                        HStack(spacing: 8) {
+                            Button("Cancel") {
+                                notificationCount = 3
+                            }
+                            .font(.subheadline)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.secondary.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                            Button("OK") {
+                                notificationCount = 3
+                            }
+                            .font(.subheadline)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(color)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
                     }
                 }
             }
@@ -638,28 +734,46 @@ struct LargerTextTestView: View {
 struct DarkInterfaceTestView: View {
     let color: Color
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Toggle Dark Mode in Settings > Display & Brightness to see all UI elements adapt instantly.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            // Hide instructions at accessibility sizes to save space
+            if !isAccessibilitySize {
+                Text("Toggle Dark Mode in Settings > Display & Brightness to see all UI elements adapt instantly.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .background(Color.secondary.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
 
             // Current Mode Indicator
             HStack(spacing: 12) {
-                Image(systemName: colorScheme == .dark ? "moon.fill" : "sun.max.fill")
-                    .font(.title)
-                    .foregroundStyle(color)
+                // Hide icon at accessibility sizes
+                if !isAccessibilitySize {
+                    Image(systemName: colorScheme == .dark ? "moon.fill" : "sun.max.fill")
+                        .font(.title)
+                        .foregroundStyle(color)
+                }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(colorScheme == .dark ? "Dark Mode Active" : "Light Mode Active")
                         .font(.headline)
-                    Text("All elements adapt automatically")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    // Hide subtitle at accessibility sizes
+                    if !isAccessibilitySize {
+                        Text("All elements adapt automatically")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 Spacer()
             }
@@ -685,48 +799,99 @@ struct DarkInterfaceTestView: View {
                 Text("Background Layers")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 8) {
-                    VStack(spacing: 4) {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color(uiColor: .systemBackground))
-                            .frame(height: 50)
-                            .overlay(
-                                Text("Base")
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                            )
-                        Text("Background")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                // Use VStack at accessibility sizes for better readability
+                if isAccessibilitySize {
+                    VStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(uiColor: .systemBackground))
+                                .frame(height: 50)
+                                .overlay(
+                                    Text("Base")
+                                        .font(.body)
+                                        .fontWeight(.medium)
+                                )
+                            Text("Background")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(uiColor: .secondarySystemBackground))
+                                .frame(height: 50)
+                                .overlay(
+                                    Text("Card")
+                                        .font(.body)
+                                        .fontWeight(.medium)
+                                )
+                            Text("Secondary")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(uiColor: .tertiarySystemBackground))
+                                .frame(height: 50)
+                                .overlay(
+                                    Text("Fill")
+                                        .font(.body)
+                                        .fontWeight(.medium)
+                                )
+                            Text("Tertiary")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
+                } else {
+                    HStack(spacing: 8) {
+                        VStack(spacing: 4) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(uiColor: .systemBackground))
+                                .frame(height: 50)
+                                .overlay(
+                                    Text("Base")
+                                        .font(.caption)
+                                        .fontWeight(.medium)
+                                )
+                            Text("Background")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
 
-                    VStack(spacing: 4) {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color(uiColor: .secondarySystemBackground))
-                            .frame(height: 50)
-                            .overlay(
-                                Text("Card")
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                            )
-                        Text("Secondary")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
+                        VStack(spacing: 4) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(uiColor: .secondarySystemBackground))
+                                .frame(height: 50)
+                                .overlay(
+                                    Text("Card")
+                                        .font(.caption)
+                                        .fontWeight(.medium)
+                                )
+                            Text("Secondary")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
 
-                    VStack(spacing: 4) {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color(uiColor: .tertiarySystemBackground))
-                            .frame(height: 50)
-                            .overlay(
-                                Text("Fill")
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                            )
-                        Text("Tertiary")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                        VStack(spacing: 4) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(uiColor: .tertiarySystemBackground))
+                                .frame(height: 50)
+                                .overlay(
+                                    Text("Fill")
+                                        .font(.caption)
+                                        .fontWeight(.medium)
+                                )
+                            Text("Tertiary")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
@@ -736,14 +901,18 @@ struct DarkInterfaceTestView: View {
                 Text("UI Elements")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 VStack(spacing: 8) {
                     // Button
                     Button(action: {}) {
                         HStack {
-                            Image(systemName: "star.fill")
+                            if !isAccessibilitySize {
+                                Image(systemName: "star.fill")
+                            }
                             Text("Accent Button")
                                 .fontWeight(.semibold)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -753,26 +922,43 @@ struct DarkInterfaceTestView: View {
                     }
 
                     // Card
-                    HStack {
-                        Image(systemName: "photo")
-                            .font(.title2)
-                            .foregroundStyle(color)
-                        VStack(alignment: .leading, spacing: 2) {
+                    if isAccessibilitySize {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text("Card Title")
-                                .font(.subheadline)
+                                .font(.body)
                                 .fontWeight(.semibold)
-                            Text("Subtitle adapts to color scheme")
-                                .font(.caption)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Text("Subtitle")
+                                .font(.body)
                                 .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                        .background(Color(uiColor: .secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    } else {
+                        HStack {
+                            Image(systemName: "photo")
+                                .font(.title2)
+                                .foregroundStyle(color)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Card Title")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                Text("Subtitle adapts to color scheme")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(Color(uiColor: .secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                    .padding()
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
 
                     // Grouped Cells
                     VStack(spacing: 1) {
@@ -787,13 +973,16 @@ struct DarkInterfaceTestView: View {
 
             // Color Contrast Info
             HStack(spacing: 8) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundStyle(color)
+                if !isAccessibilitySize {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(color)
+                }
                 Text(colorScheme == .dark ?
                     "Dark mode reduces glare and eye strain in low-light environments" :
                     "Light mode provides better visibility in bright environments")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding()
             .background(Color.secondary.opacity(0.1))
@@ -808,21 +997,39 @@ struct DarkInterfaceTestView: View {
 struct ColorRow<S: ShapeStyle>: View {
     let label: String
     let colorStyle: S
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
-        HStack {
-            Text(label)
-                .font(.caption)
-                .frame(width: 70, alignment: .leading)
+        if isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(label)
+                    .font(.body)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Rectangle()
-                .fill(colorStyle)
-                .frame(height: 30)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
+                Rectangle()
+                    .fill(colorStyle)
+                    .frame(height: 40)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+            }
+        } else {
+            HStack {
+                Text(label)
+                    .font(.caption)
+                    .frame(width: 70, alignment: .leading)
 
-            Text("Text adapts")
-                .font(.caption)
-                .foregroundStyle(colorStyle)
+                Rectangle()
+                    .fill(colorStyle)
+                    .frame(height: 30)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+
+                Text("Text adapts")
+                    .font(.caption)
+                    .foregroundStyle(colorStyle)
+            }
         }
     }
 }
@@ -831,21 +1038,41 @@ struct ListRowDemo: View {
     let icon: String
     let title: String
     let value: String
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundStyle(.blue)
-                .frame(width: 24)
-            Text(title)
-                .font(.subheadline)
-            Spacer()
-            Text(value)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+        if isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(title)
+                    .font(.body)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(value)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
+            .padding(.vertical, 12)
+        } else {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundStyle(.blue)
+                    .frame(width: 24)
+                Text(title)
+                    .font(.subheadline)
+                Spacer()
+                Text(value)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
     }
 }
 
