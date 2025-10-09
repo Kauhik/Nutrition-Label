@@ -10,55 +10,71 @@ import SwiftUI
 struct AccessibilityDetailView: View {
     let feature: AccessibilityFeature
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                // Header with icon
-                HStack {
-                    Image(systemName: feature.icon)
-                        .font(.system(size: 60))
-                        .foregroundStyle(feature.color)
-                    Spacer()
+                // Header with icon - hide icon at accessibility sizes
+                if !isAccessibilitySize {
+                    HStack {
+                        Image(systemName: feature.icon)
+                            .font(.system(size: 60))
+                            .foregroundStyle(feature.color)
+                        Spacer()
+                    }
+                    .padding(.top)
                 }
-                .padding(.top)
 
                 // Feature name
                 Text(feature.name)
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, isAccessibilitySize ? 8 : 0)
 
-                // Short description
-                Text(feature.shortDescription)
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-
-                Divider()
-
-                // Platforms
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Available On")
-                        .font(.headline)
+                // Short description - hide at accessibility sizes
+                if !isAccessibilitySize {
+                    Text(feature.shortDescription)
+                        .font(.title3)
                         .foregroundStyle(.secondary)
-
-                    FlowLayout(spacing: 8) {
-                        ForEach(feature.platforms, id: \.self) { platform in
-                            PlatformBadge(platform: platform)
-                        }
-                    }
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Divider()
+
+                // Platforms - hide at accessibility sizes to save space
+                if !isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Available On")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+
+                        FlowLayout(spacing: 8) {
+                            ForEach(feature.platforms, id: \.self) { platform in
+                                PlatformBadge(platform: platform)
+                            }
+                        }
+                    }
+
+                    Divider()
+                }
 
                 // Full description
                 VStack(alignment: .leading, spacing: 12) {
                     Text("About")
                         .font(.headline)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     Text(feature.fullDescription)
                         .font(.body)
                         .lineSpacing(4)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Divider()
@@ -68,19 +84,37 @@ struct AccessibilityDetailView: View {
                     Text("How to Enable")
                         .font(.headline)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
 
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: isAccessibilitySize ? 16 : 8) {
                         ForEach(Array(feature.activationSteps.enumerated()), id: \.offset) { index, step in
-                            HStack(alignment: .top, spacing: 12) {
-                                Text("\(index + 1).")
-                                    .font(.body)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(feature.color)
-                                    .frame(width: 20, alignment: .leading)
+                            if isAccessibilitySize {
+                                // Simplified layout for accessibility sizes
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("\(index + 1).")
+                                        .font(.body)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(feature.color)
 
-                                Text(step)
-                                    .font(.body)
-                                    .lineSpacing(4)
+                                    Text(step)
+                                        .font(.body)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .lineSpacing(4)
+                                }
+                            } else {
+                                // Standard layout for normal sizes
+                                HStack(alignment: .top, spacing: 12) {
+                                    Text("\(index + 1).")
+                                        .font(.body)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(feature.color)
+                                        .frame(width: 20, alignment: .leading)
+
+                                    Text(step)
+                                        .font(.body)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .lineSpacing(4)
+                                }
                             }
                         }
                     }
@@ -91,27 +125,32 @@ struct AccessibilityDetailView: View {
                 // Test Playground
                 AccessibilityTestPlayground(feature: feature)
 
-                Divider()
+                // Implementation tips - hide at accessibility sizes
+                if !isAccessibilitySize {
+                    Divider()
 
-                // Implementation tips
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("For Developers")
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("For Developers")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
 
-                    Text("Ensure your app supports this feature by following Apple's Human Interface Guidelines and testing with the Accessibility Inspector.")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .lineSpacing(4)
+                        Text("Ensure your app supports this feature by following Apple's Human Interface Guidelines and testing with the Accessibility Inspector.")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                            .lineSpacing(4)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
 
-                // Footer
-                Text("Kaushik")
-                    .font(.footnote)
-                    .foregroundStyle(.tertiary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 16)
-                    .padding(.bottom, 8)
+                // Footer - hide at accessibility sizes
+                if !isAccessibilitySize {
+                    Text("Kaushik")
+                        .font(.footnote)
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 16)
+                        .padding(.bottom, 8)
+                }
             }
             .padding()
         }
