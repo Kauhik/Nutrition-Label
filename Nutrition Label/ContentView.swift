@@ -9,6 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var searchText = ""
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var filteredFeatures: [AccessibilityFeature] {
         if searchText.isEmpty {
@@ -38,15 +43,21 @@ struct ContentView: View {
                         Text("Accessibility")
                             .font(.largeTitle)
                             .fontWeight(.bold)
+                            .fixedSize(horizontal: false, vertical: true)
 
                         Text("iOS Nutrition Labels")
                             .font(.title2)
                             .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
 
-                        Text("Discover how apps can support accessibility features to ensure everyone can use them effectively.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .padding(.top, 4)
+                        // Hide description at accessibility sizes to save space
+                        if !isAccessibilitySize {
+                            Text("Discover how apps can support accessibility features to ensure everyone can use them effectively.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .padding(.top, 4)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
@@ -56,13 +67,15 @@ struct ContentView: View {
                     LazyVStack(alignment: .leading, spacing: 32) {
                         ForEach(groupedFeatures, id: \.category) { group in
                             VStack(alignment: .leading, spacing: 12) {
-                                // Category header
+                                // Category header - keep icons visible
                                 HStack(spacing: 8) {
                                     Image(systemName: group.category.icon)
                                         .foregroundStyle(group.category.color)
+                                        .imageScale(.large)
                                     Text(group.category.rawValue)
                                         .font(.title3)
                                         .fontWeight(.semibold)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
                                 .padding(.horizontal)
                                 .padding(.top, 8)
@@ -90,33 +103,47 @@ struct ContentView: View {
 struct AccessibilityCard: View {
     let feature: AccessibilityFeature
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
         HStack(spacing: 16) {
-            // Icon
-            Image(systemName: feature.icon)
-                .font(.system(size: 40))
-                .foregroundStyle(feature.color)
-                .frame(width: 60, height: 60)
+            // Icon - hide at accessibility sizes
+            if !isAccessibilitySize {
+                Image(systemName: feature.icon)
+                    .font(.system(size: 40))
+                    .foregroundStyle(feature.color)
+                    .frame(width: 60, height: 60)
+            }
 
             // Content
             VStack(alignment: .leading, spacing: 6) {
                 Text(feature.name)
                     .font(.headline)
                     .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                Text(feature.shortDescription)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
+                // Hide description at accessibility sizes
+                if !isAccessibilitySize {
+                    Text(feature.shortDescription)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
             Spacer()
 
-            // Chevron
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+            // Chevron - hide at accessibility sizes
+            if !isAccessibilitySize {
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
         }
         .padding()
         .background(
