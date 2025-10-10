@@ -2509,26 +2509,34 @@ struct CaptionTypeBadge: View {
 struct AudioDescriptionsTestView: View {
     let color: Color
     @State private var player: AVPlayer?
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
         VStack(spacing: 16) {
-            // Instructions
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    Image(systemName: "info.circle.fill")
-                        .foregroundStyle(color)
-                    Text("Audio Description Settings")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                }
+            // Instructions - hide at accessibility sizes
+            if !isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "info.circle.fill")
+                            .foregroundStyle(color)
+                        Text("Audio Description Settings")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                    }
 
-                Text("Go to Settings > Accessibility > Audio Descriptions and toggle it on. Then play the video below to hear narrated descriptions of visual elements.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    Text("Go to Settings > Accessibility > Audio Descriptions and toggle it on. Then play the video below to hear narrated descriptions of visual elements.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding()
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .padding()
-            .background(Color.secondary.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
 
             // Video Player
             VStack(spacing: 8) {
@@ -2553,10 +2561,14 @@ struct AudioDescriptionsTestView: View {
                     }
                 }
 
-                Text("Sample video - audio descriptions narrate visual scenes between dialogue")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                // Hide description text at accessibility sizes
+                if !isAccessibilitySize {
+                    Text("Sample video - audio descriptions narrate visual scenes between dialogue")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .padding()
             .background(Color(uiColor: .secondarySystemBackground))
@@ -2567,6 +2579,7 @@ struct AudioDescriptionsTestView: View {
                 Text("What Gets Described")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 VStack(spacing: 6) {
                     DescriptionTypeBadge(
@@ -2602,17 +2615,20 @@ struct AudioDescriptionsTestView: View {
                 }
             }
 
-            // Info
-            HStack(spacing: 8) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundStyle(color)
-                Text("Audio descriptions are essential for blind and low-vision users to understand visual storytelling and context in videos")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            // Info - hide at accessibility sizes to save space
+            if !isAccessibilitySize {
+                HStack(spacing: 8) {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(color)
+                    Text("Audio descriptions are essential for blind and low-vision users to understand visual storytelling and context in videos")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding()
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .padding()
-            .background(Color.secondary.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
@@ -2655,27 +2671,38 @@ struct DescriptionTypeBadge: View {
     let label: String
     let description: String
     let color: Color
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: icon)
-                .font(.caption)
-                .foregroundStyle(color)
-                .frame(width: 24)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(label)
+        HStack(spacing: isAccessibilitySize ? 12 : 10) {
+            // Hide icon at accessibility sizes
+            if !isAccessibilitySize {
+                Image(systemName: icon)
                     .font(.caption)
+                    .foregroundStyle(color)
+                    .frame(width: 24)
+            }
+
+            VStack(alignment: .leading, spacing: isAccessibilitySize ? 4 : 2) {
+                Text(label)
+                    .font(isAccessibilitySize ? .body : .caption)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 Text(description)
-                    .font(.caption2)
+                    .font(isAccessibilitySize ? .body : .caption2)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             Spacer()
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, isAccessibilitySize ? 16 : 12)
+        .padding(.vertical, isAccessibilitySize ? 12 : 8)
         .background(color.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
