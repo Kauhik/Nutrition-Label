@@ -1080,30 +1080,48 @@ struct ListRowDemo: View {
 struct DifferentiateColorTestView: View {
     let color: Color
     @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var selectedOption = "Option 1"
     @State private var email = "invalid-email"
 
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
+
     var body: some View {
         VStack(spacing: 16) {
-            Text("Toggle Differentiate Without Color in Accessibility > Display & Text Size to see icons and labels appear.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            // Hide instructions at accessibility sizes
+            if !isAccessibilitySize {
+                Text("Toggle Differentiate Without Color in Accessibility > Display & Text Size to see icons and labels appear.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .background(Color.secondary.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
 
             // Feature Status
             HStack(spacing: 12) {
-                Image(systemName: differentiateWithoutColor ? "checkmark.circle.fill" : "circle")
-                    .font(.title)
-                    .foregroundStyle(color)
+                // Hide icon at accessibility sizes
+                if !isAccessibilitySize {
+                    Image(systemName: differentiateWithoutColor ? "checkmark.circle.fill" : "circle")
+                        .font(.title)
+                        .foregroundStyle(color)
+                }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(differentiateWithoutColor ? "Feature Active" : "Feature Inactive")
                         .font(.headline)
-                    Text(differentiateWithoutColor ? "Icons & text shown" : "Color-only mode")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    // Hide subtitle at accessibility sizes
+                    if !isAccessibilitySize {
+                        Text(differentiateWithoutColor ? "Icons & text shown" : "Color-only mode")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 Spacer()
             }
@@ -1116,28 +1134,55 @@ struct DifferentiateColorTestView: View {
                 Text("Status Indicators")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 8) {
-                    StatusIndicator(
-                        status: "Success",
-                        color: .green,
-                        icon: "checkmark.circle.fill",
-                        showIcon: differentiateWithoutColor
-                    )
+                // Use VStack at accessibility sizes
+                if isAccessibilitySize {
+                    VStack(spacing: 12) {
+                        StatusIndicator(
+                            status: "Success",
+                            color: .green,
+                            icon: "checkmark.circle.fill",
+                            showIcon: differentiateWithoutColor
+                        )
 
-                    StatusIndicator(
-                        status: "Warning",
-                        color: .orange,
-                        icon: "exclamationmark.triangle.fill",
-                        showIcon: differentiateWithoutColor
-                    )
+                        StatusIndicator(
+                            status: "Warning",
+                            color: .orange,
+                            icon: "exclamationmark.triangle.fill",
+                            showIcon: differentiateWithoutColor
+                        )
 
-                    StatusIndicator(
-                        status: "Error",
-                        color: .red,
-                        icon: "xmark.circle.fill",
-                        showIcon: differentiateWithoutColor
-                    )
+                        StatusIndicator(
+                            status: "Error",
+                            color: .red,
+                            icon: "xmark.circle.fill",
+                            showIcon: differentiateWithoutColor
+                        )
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        StatusIndicator(
+                            status: "Success",
+                            color: .green,
+                            icon: "checkmark.circle.fill",
+                            showIcon: differentiateWithoutColor
+                        )
+
+                        StatusIndicator(
+                            status: "Warning",
+                            color: .orange,
+                            icon: "exclamationmark.triangle.fill",
+                            showIcon: differentiateWithoutColor
+                        )
+
+                        StatusIndicator(
+                            status: "Error",
+                            color: .red,
+                            icon: "xmark.circle.fill",
+                            showIcon: differentiateWithoutColor
+                        )
+                    }
                 }
             }
 
@@ -1146,56 +1191,119 @@ struct DifferentiateColorTestView: View {
                 Text("Form Validation")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 VStack(spacing: 8) {
                     // Valid field
-                    HStack {
-                        Text("Name")
-                            .font(.subheadline)
-                            .frame(width: 60, alignment: .leading)
-                        Text("John Doe")
-                            .font(.subheadline)
-                            .padding(8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.green.opacity(0.1))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .stroke(Color.green, lineWidth: differentiateWithoutColor ? 2 : 1)
-                            )
-                        if differentiateWithoutColor {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
+                    if isAccessibilitySize {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Name")
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                            HStack {
+                                Text("John Doe")
+                                    .font(.body)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding(8)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.green.opacity(0.1))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .stroke(Color.green, lineWidth: differentiateWithoutColor ? 2 : 1)
+                                    )
+                                if differentiateWithoutColor {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.green)
+                                }
+                            }
+                        }
+                    } else {
+                        HStack {
+                            Text("Name")
+                                .font(.subheadline)
+                                .frame(width: 60, alignment: .leading)
+                            Text("John Doe")
+                                .font(.subheadline)
+                                .padding(8)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.green.opacity(0.1))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(Color.green, lineWidth: differentiateWithoutColor ? 2 : 1)
+                                )
+                            if differentiateWithoutColor {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                            }
                         }
                     }
 
                     // Invalid field
-                    HStack {
-                        Text("Email")
-                            .font(.subheadline)
-                            .frame(width: 60, alignment: .leading)
-                        Text(email)
-                            .font(.subheadline)
-                            .padding(8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.red.opacity(0.1))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .stroke(Color.red, lineWidth: differentiateWithoutColor ? 2 : 1)
-                            )
-                        if differentiateWithoutColor {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(.red)
-                        }
-                    }
+                    if isAccessibilitySize {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Email")
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                            HStack {
+                                Text(email)
+                                    .font(.body)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding(8)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.red.opacity(0.1))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .stroke(Color.red, lineWidth: differentiateWithoutColor ? 2 : 1)
+                                    )
+                                if differentiateWithoutColor {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(.red)
+                                }
+                            }
 
-                    if differentiateWithoutColor {
-                        HStack(spacing: 4) {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .font(.caption)
-                                .foregroundStyle(.red)
-                            Text("Invalid email format")
-                                .font(.caption)
-                                .foregroundStyle(.red)
+                            if differentiateWithoutColor {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .font(.body)
+                                        .foregroundStyle(.red)
+                                    Text("Invalid email")
+                                        .font(.body)
+                                        .foregroundStyle(.red)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                        }
+                    } else {
+                        HStack {
+                            Text("Email")
+                                .font(.subheadline)
+                                .frame(width: 60, alignment: .leading)
+                            Text(email)
+                                .font(.subheadline)
+                                .padding(8)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.red.opacity(0.1))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(Color.red, lineWidth: differentiateWithoutColor ? 2 : 1)
+                                )
+                            if differentiateWithoutColor {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.red)
+                            }
+                        }
+
+                        if differentiateWithoutColor {
+                            HStack(spacing: 4) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.red)
+                                Text("Invalid email format")
+                                    .font(.caption)
+                                    .foregroundStyle(.red)
+                            }
                         }
                     }
                 }
@@ -1206,34 +1314,69 @@ struct DifferentiateColorTestView: View {
                 Text("Selection States")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 8) {
-                    ForEach(["Option 1", "Option 2", "Option 3"], id: \.self) { option in
-                        Button(action: {
-                            selectedOption = option
-                        }) {
-                            HStack(spacing: 6) {
-                                if differentiateWithoutColor && selectedOption == option {
-                                    Image(systemName: "checkmark")
-                                        .font(.caption)
-                                        .fontWeight(.bold)
+                // Use VStack at accessibility sizes
+                if isAccessibilitySize {
+                    VStack(spacing: 8) {
+                        ForEach(["Option 1", "Option 2", "Option 3"], id: \.self) { option in
+                            Button(action: {
+                                selectedOption = option
+                            }) {
+                                HStack(spacing: 8) {
+                                    if differentiateWithoutColor && selectedOption == option {
+                                        Image(systemName: "checkmark")
+                                            .font(.body)
+                                            .fontWeight(.bold)
+                                    }
+                                    Text(option)
+                                        .font(.body)
+                                        .fontWeight(selectedOption == option ? .bold : .regular)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
-                                Text(option.replacingOccurrences(of: "Option ", with: ""))
-                                    .font(.caption)
-                                    .fontWeight(selectedOption == option ? .bold : .regular)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(selectedOption == option ? color.opacity(0.2) : Color.clear)
+                                .foregroundStyle(selectedOption == option ? color : .primary)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(
+                                            selectedOption == option ? color : Color.gray.opacity(0.3),
+                                            lineWidth: differentiateWithoutColor && selectedOption == option ? 2 : 1
+                                        )
+                                )
                             }
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 12)
-                            .frame(maxWidth: .infinity)
-                            .background(selectedOption == option ? color.opacity(0.2) : Color.clear)
-                            .foregroundStyle(selectedOption == option ? color : .primary)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(
-                                        selectedOption == option ? color : Color.gray.opacity(0.3),
-                                        lineWidth: differentiateWithoutColor && selectedOption == option ? 2 : 1
-                                    )
-                            )
+                        }
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        ForEach(["Option 1", "Option 2", "Option 3"], id: \.self) { option in
+                            Button(action: {
+                                selectedOption = option
+                            }) {
+                                HStack(spacing: 6) {
+                                    if differentiateWithoutColor && selectedOption == option {
+                                        Image(systemName: "checkmark")
+                                            .font(.caption)
+                                            .fontWeight(.bold)
+                                    }
+                                    Text(option.replacingOccurrences(of: "Option ", with: ""))
+                                        .font(.caption)
+                                        .fontWeight(selectedOption == option ? .bold : .regular)
+                                }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 12)
+                                .frame(maxWidth: .infinity)
+                                .background(selectedOption == option ? color.opacity(0.2) : Color.clear)
+                                .foregroundStyle(selectedOption == option ? color : .primary)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(
+                                            selectedOption == option ? color : Color.gray.opacity(0.3),
+                                            lineWidth: differentiateWithoutColor && selectedOption == option ? 2 : 1
+                                        )
+                                )
+                            }
                         }
                     }
                 }
@@ -1244,8 +1387,9 @@ struct DifferentiateColorTestView: View {
                 Text("Progress Indicators")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                VStack(spacing: 8) {
+                VStack(spacing: isAccessibilitySize ? 16 : 8) {
                     ProgressBarDemo(
                         label: "Storage",
                         value: 0.75,
@@ -1272,40 +1416,68 @@ struct DifferentiateColorTestView: View {
                 Text("Tags & Badges")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 8) {
-                    TagBadge(
-                        text: "Active",
-                        icon: "checkmark.circle.fill",
-                        color: .green,
-                        showIcon: differentiateWithoutColor
-                    )
-                    TagBadge(
-                        text: "Pending",
-                        icon: "clock.fill",
-                        color: .orange,
-                        showIcon: differentiateWithoutColor
-                    )
-                    TagBadge(
-                        text: "Inactive",
-                        icon: "xmark.circle.fill",
-                        color: .gray,
-                        showIcon: differentiateWithoutColor
-                    )
+                // Use VStack at accessibility sizes
+                if isAccessibilitySize {
+                    VStack(spacing: 12) {
+                        TagBadge(
+                            text: "Active",
+                            icon: "checkmark.circle.fill",
+                            color: .green,
+                            showIcon: differentiateWithoutColor
+                        )
+                        TagBadge(
+                            text: "Pending",
+                            icon: "clock.fill",
+                            color: .orange,
+                            showIcon: differentiateWithoutColor
+                        )
+                        TagBadge(
+                            text: "Inactive",
+                            icon: "xmark.circle.fill",
+                            color: .gray,
+                            showIcon: differentiateWithoutColor
+                        )
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        TagBadge(
+                            text: "Active",
+                            icon: "checkmark.circle.fill",
+                            color: .green,
+                            showIcon: differentiateWithoutColor
+                        )
+                        TagBadge(
+                            text: "Pending",
+                            icon: "clock.fill",
+                            color: .orange,
+                            showIcon: differentiateWithoutColor
+                        )
+                        TagBadge(
+                            text: "Inactive",
+                            icon: "xmark.circle.fill",
+                            color: .gray,
+                            showIcon: differentiateWithoutColor
+                        )
+                    }
                 }
             }
 
-            // Info
-            HStack(spacing: 8) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundStyle(color)
-                Text("Never rely on color alone to convey information - always provide shapes, icons, or text labels")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            // Info - hide at accessibility sizes to save space
+            if !isAccessibilitySize {
+                HStack(spacing: 8) {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(color)
+                    Text("Never rely on color alone to convey information - always provide shapes, icons, or text labels")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding()
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .padding()
-            .background(Color.secondary.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
@@ -1318,26 +1490,32 @@ struct StatusIndicator: View {
     let color: Color
     let icon: String
     let showIcon: Bool
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
         VStack(spacing: 8) {
             if showIcon {
                 Image(systemName: icon)
-                    .font(.title2)
+                    .font(isAccessibilitySize ? .title : .title2)
                     .foregroundStyle(color)
             } else {
                 Circle()
                     .fill(color)
-                    .frame(width: 28, height: 28)
+                    .frame(width: isAccessibilitySize ? 40 : 28, height: isAccessibilitySize ? 40 : 28)
             }
 
             Text(status)
-                .font(.caption)
+                .font(isAccessibilitySize ? .body : .caption)
                 .fontWeight(.semibold)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
-        .padding(.horizontal, 8)
+        .padding(.vertical, isAccessibilitySize ? 16 : 10)
+        .padding(.horizontal, isAccessibilitySize ? 12 : 8)
         .background(color.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
@@ -1348,31 +1526,67 @@ struct ProgressBarDemo: View {
     let value: Double
     let color: Color
     let showLabel: Bool
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
-        HStack(spacing: 8) {
-            Text(label)
-                .font(.caption)
-                .frame(width: 50, alignment: .leading)
+        if isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(label)
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
 
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.gray.opacity(0.2))
+                    Spacer()
 
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(color)
-                        .frame(width: geometry.size.width * value)
+                    if showLabel {
+                        Text("\(Int(value * 100))%")
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .foregroundStyle(color)
+                    }
                 }
-            }
-            .frame(height: 8)
 
-            if showLabel {
-                Text("\(Int(value * 100))%")
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.2))
+
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(color)
+                            .frame(width: geometry.size.width * value)
+                    }
+                }
+                .frame(height: 12)
+            }
+        } else {
+            HStack(spacing: 8) {
+                Text(label)
                     .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundStyle(color)
-                    .frame(width: 35, alignment: .trailing)
+                    .frame(width: 50, alignment: .leading)
+
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.2))
+
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(color)
+                            .frame(width: geometry.size.width * value)
+                    }
+                }
+                .frame(height: 8)
+
+                if showLabel {
+                    Text("\(Int(value * 100))%")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(color)
+                        .frame(width: 35, alignment: .trailing)
+                }
             }
         }
     }
@@ -1383,19 +1597,26 @@ struct TagBadge: View {
     let icon: String
     let color: Color
     let showIcon: Bool
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: isAccessibilitySize ? 8 : 4) {
             if showIcon {
                 Image(systemName: icon)
-                    .font(.caption2)
+                    .font(isAccessibilitySize ? .body : .caption2)
             }
             Text(text)
-                .font(.caption2)
+                .font(isAccessibilitySize ? .body : .caption2)
                 .fontWeight(.medium)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
+        .padding(.horizontal, isAccessibilitySize ? 16 : 10)
+        .padding(.vertical, isAccessibilitySize ? 12 : 5)
+        .frame(maxWidth: isAccessibilitySize ? .infinity : nil)
         .background(color.opacity(0.2))
         .foregroundStyle(color)
         .clipShape(Capsule())
@@ -1406,28 +1627,46 @@ struct TagBadge: View {
 struct ContrastTestView: View {
     let color: Color
     @Environment(\.colorSchemeContrast) var contrast
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Toggle Increase Contrast in Accessibility > Display & Text Size to see enhanced contrast ratios.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            // Hide instructions at accessibility sizes
+            if !isAccessibilitySize {
+                Text("Toggle Increase Contrast in Accessibility > Display & Text Size to see enhanced contrast ratios.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .background(Color.secondary.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
 
             // Feature Status
             HStack(spacing: 12) {
-                Image(systemName: contrast == .increased ? "circle.lefthalf.filled" : "circle")
-                    .font(.title)
-                    .foregroundStyle(color)
+                // Hide icon at accessibility sizes
+                if !isAccessibilitySize {
+                    Image(systemName: contrast == .increased ? "circle.lefthalf.filled" : "circle")
+                        .font(.title)
+                        .foregroundStyle(color)
+                }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(contrast == .increased ? "Increased Contrast" : "Standard Contrast")
                         .font(.headline)
-                    Text(contrast == .increased ? "Enhanced visibility active" : "Normal mode")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    // Hide subtitle at accessibility sizes
+                    if !isAccessibilitySize {
+                        Text(contrast == .increased ? "Enhanced visibility active" : "Normal mode")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 Spacer()
             }
@@ -1440,8 +1679,9 @@ struct ContrastTestView: View {
                 Text("Text Contrast")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                VStack(spacing: 12) {
+                VStack(spacing: isAccessibilitySize ? 16 : 12) {
                     TextContrastRow(
                         label: "Primary",
                         textStyle: .primary,
@@ -1468,13 +1708,17 @@ struct ContrastTestView: View {
                 Text("Button & Interactive Elements")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 VStack(spacing: 8) {
                     Button(action: {}) {
                         HStack {
-                            Image(systemName: "star.fill")
+                            if !isAccessibilitySize {
+                                Image(systemName: "star.fill")
+                            }
                             Text("Primary Button")
                                 .fontWeight(.semibold)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -1485,9 +1729,12 @@ struct ContrastTestView: View {
 
                     Button(action: {}) {
                         HStack {
-                            Image(systemName: "heart")
+                            if !isAccessibilitySize {
+                                Image(systemName: "heart")
+                            }
                             Text("Secondary Button")
                                 .fontWeight(.semibold)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -1507,70 +1754,73 @@ struct ContrastTestView: View {
                 Text("Background Layers")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                VStack(spacing: 8) {
+                VStack(spacing: isAccessibilitySize ? 12 : 8) {
                     BackgroundLayerDemo(
-                        title: "Primary Background",
+                        title: "Primary",
                         backgroundColor: Color(uiColor: .systemBackground),
                         contrast: contrast
                     )
                     BackgroundLayerDemo(
-                        title: "Secondary Background",
+                        title: "Secondary",
                         backgroundColor: Color(uiColor: .secondarySystemBackground),
                         contrast: contrast
                     )
                     BackgroundLayerDemo(
-                        title: "Tertiary Background",
+                        title: "Tertiary",
                         backgroundColor: Color(uiColor: .tertiarySystemBackground),
                         contrast: contrast
                     )
                 }
             }
 
-            // Separators & Borders
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Separators & Borders")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+            // Separators & Borders - hide at accessibility sizes
+            if !isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Separators & Borders")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
 
-                VStack(spacing: 1) {
-                    HStack {
-                        Text("Item 1")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                    VStack(spacing: 1) {
+                        HStack {
+                            Text("Item 1")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(Color(uiColor: .secondarySystemBackground))
+
+                        Divider()
+                            .background(Color.primary.opacity(contrast == .increased ? 0.3 : 0.2))
+
+                        HStack {
+                            Text("Item 2")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(Color(uiColor: .secondarySystemBackground))
+
+                        Divider()
+                            .background(Color.primary.opacity(contrast == .increased ? 0.3 : 0.2))
+
+                        HStack {
+                            Text("Item 3")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding()
+                        .background(Color(uiColor: .secondarySystemBackground))
                     }
-                    .padding()
-                    .background(Color(uiColor: .secondarySystemBackground))
-
-                    Divider()
-                        .background(Color.primary.opacity(contrast == .increased ? 0.3 : 0.2))
-
-                    HStack {
-                        Text("Item 2")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                    }
-                    .padding()
-                    .background(Color(uiColor: .secondarySystemBackground))
-
-                    Divider()
-                        .background(Color.primary.opacity(contrast == .increased ? 0.3 : 0.2))
-
-                    HStack {
-                        Text("Item 3")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                    }
-                    .padding()
-                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
 
             // Icons & Symbols
@@ -1578,12 +1828,23 @@ struct ContrastTestView: View {
                 Text("Icons & Symbols")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 16) {
-                    IconContrastDemo(icon: "house.fill", label: "Home", color: .blue, contrast: contrast)
-                    IconContrastDemo(icon: "bell.fill", label: "Alerts", color: .orange, contrast: contrast)
-                    IconContrastDemo(icon: "person.fill", label: "Profile", color: .purple, contrast: contrast)
-                    IconContrastDemo(icon: "gear", label: "Settings", color: .gray, contrast: contrast)
+                // Use VStack at accessibility sizes
+                if isAccessibilitySize {
+                    VStack(spacing: 16) {
+                        IconContrastDemo(icon: "house.fill", label: "Home", color: .blue, contrast: contrast)
+                        IconContrastDemo(icon: "bell.fill", label: "Alerts", color: .orange, contrast: contrast)
+                        IconContrastDemo(icon: "person.fill", label: "Profile", color: .purple, contrast: contrast)
+                        IconContrastDemo(icon: "gear", label: "Settings", color: .gray, contrast: contrast)
+                    }
+                } else {
+                    HStack(spacing: 16) {
+                        IconContrastDemo(icon: "house.fill", label: "Home", color: .blue, contrast: contrast)
+                        IconContrastDemo(icon: "bell.fill", label: "Alerts", color: .orange, contrast: contrast)
+                        IconContrastDemo(icon: "person.fill", label: "Profile", color: .purple, contrast: contrast)
+                        IconContrastDemo(icon: "gear", label: "Settings", color: .gray, contrast: contrast)
+                    }
                 }
             }
 
@@ -1592,45 +1853,72 @@ struct ContrastTestView: View {
                 Text("Card Components")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 12) {
-                    Image(systemName: "photo.fill")
-                        .font(.largeTitle)
-                        .foregroundStyle(color)
-                        .frame(width: 60, height: 60)
-                        .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-
-                    VStack(alignment: .leading, spacing: 4) {
+                if isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Card Title")
                             .font(.headline)
-                        Text("Subtitle with secondary text")
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text("Subtitle")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                        Text("Additional details in tertiary")
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text("Additional details")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    Spacer()
+                    .padding()
+                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray.opacity(contrast == .increased ? 0.3 : 0.15), lineWidth: 1)
+                    )
+                } else {
+                    HStack(spacing: 12) {
+                        Image(systemName: "photo.fill")
+                            .font(.largeTitle)
+                            .foregroundStyle(color)
+                            .frame(width: 60, height: 60)
+                            .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Card Title")
+                                .font(.headline)
+                            Text("Subtitle with secondary text")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Text("Additional details in tertiary")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                        Spacer()
+                    }
+                    .padding()
+                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray.opacity(contrast == .increased ? 0.3 : 0.15), lineWidth: 1)
+                    )
                 }
-                .padding()
-                .background(Color(uiColor: .secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.gray.opacity(contrast == .increased ? 0.3 : 0.15), lineWidth: 1)
-                )
             }
 
             // WCAG Info
             HStack(spacing: 8) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundStyle(color)
+                if !isAccessibilitySize {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(color)
+                }
                 Text(contrast == .increased ?
                     "Enhanced contrast improves readability for users with low vision" :
                     "Standard contrast follows WCAG AA guidelines (4.5:1 for text)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding()
             .background(Color.secondary.opacity(0.1))
@@ -1646,27 +1934,58 @@ struct TextContrastRow<S: ShapeStyle>: View {
     let label: String
     let textStyle: S
     let contrast: ColorSchemeContrast
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
-        HStack {
-            Text(label)
-                .font(.caption)
-                .frame(width: 70, alignment: .leading)
+        if isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(label)
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
 
-            Text("The quick brown fox jumps")
-                .font(.subheadline)
-                .foregroundStyle(textStyle)
+                    Spacer()
 
-            Spacer()
+                    Text(contrast == .increased ? "AAA" : "AA")
+                        .font(.body)
+                        .fontWeight(.bold)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(contrast == .increased ? Color.green.opacity(0.2) : Color.blue.opacity(0.2))
+                        .foregroundStyle(contrast == .increased ? .green : .blue)
+                        .clipShape(Capsule())
+                }
 
-            Text(contrast == .increased ? "AAA" : "AA")
-                .font(.caption2)
-                .fontWeight(.bold)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(contrast == .increased ? Color.green.opacity(0.2) : Color.blue.opacity(0.2))
-                .foregroundStyle(contrast == .increased ? .green : .blue)
-                .clipShape(Capsule())
+                Text("The quick brown fox")
+                    .font(.body)
+                    .foregroundStyle(textStyle)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        } else {
+            HStack {
+                Text(label)
+                    .font(.caption)
+                    .frame(width: 70, alignment: .leading)
+
+                Text("The quick brown fox jumps")
+                    .font(.subheadline)
+                    .foregroundStyle(textStyle)
+
+                Spacer()
+
+                Text(contrast == .increased ? "AAA" : "AA")
+                    .font(.caption2)
+                    .fontWeight(.bold)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(contrast == .increased ? Color.green.opacity(0.2) : Color.blue.opacity(0.2))
+                    .foregroundStyle(contrast == .increased ? .green : .blue)
+                    .clipShape(Capsule())
+            }
         }
     }
 }
@@ -1675,18 +1994,27 @@ struct BackgroundLayerDemo: View {
     let title: String
     let backgroundColor: Color
     let contrast: ColorSchemeContrast
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: isAccessibilitySize ? 8 : 4) {
             Text(title)
-                .font(.caption)
+                .font(isAccessibilitySize ? .body : .caption)
                 .fontWeight(.medium)
-            Text("Contrast: \(contrast == .increased ? "Enhanced" : "Standard")")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !isAccessibilitySize {
+                Text("Contrast: \(contrast == .increased ? "Enhanced" : "Standard")")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
+        .padding(isAccessibilitySize ? 16 : 12)
         .background(backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(
@@ -1701,19 +2029,42 @@ struct IconContrastDemo: View {
     let label: String
     let color: Color
     let contrast: ColorSchemeContrast
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     var body: some View {
-        VStack(spacing: 6) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(color)
-                .frame(width: 50, height: 50)
-                .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
-                .clipShape(Circle())
+        if isAccessibilitySize {
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.title)
+                    .foregroundStyle(color)
+                    .frame(width: 60, height: 60)
+                    .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
+                    .clipShape(Circle())
 
-            Text(label)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                Text(label)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+            }
+        } else {
+            VStack(spacing: 6) {
+                Image(systemName: icon)
+                    .font(.title2)
+                    .foregroundStyle(color)
+                    .frame(width: 50, height: 50)
+                    .background(color.opacity(contrast == .increased ? 0.2 : 0.1))
+                    .clipShape(Circle())
+
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }

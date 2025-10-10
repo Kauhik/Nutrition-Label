@@ -23,6 +23,7 @@ enum AccessibilityCategory: String, CaseIterable {
     }
 
     var color: Color {
+        
         switch self {
         case .vision: return .blue
         case .hearing: return .green
