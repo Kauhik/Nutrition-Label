@@ -175,78 +175,122 @@ struct VoiceControlTestView: View {
     @State private var isToggled = false
     @State private var textInput = ""
     @State private var selectedOption = "Option 1"
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
 
     let options = ["Option 1", "Option 2", "Option 3"]
 
     var body: some View {
         VStack(spacing: 16) {
-            // Instructions
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Voice Control Commands to Try:")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
+            // Instructions - hide at accessibility sizes
+            if !isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Voice Control Commands to Try:")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Label("\"Show names\" - See button labels", systemImage: "tag")
-                    Label("\"Show numbers\" - See item numbers", systemImage: "number")
-                    Label("\"Show grid\" - Show precise tap grid", systemImage: "grid")
-                    Label("\"Tap [name]\" - Tap any button", systemImage: "hand.tap")
-                    Label("\"Type [text]\" - Dictate text", systemImage: "text.cursor")
+                    VStack(alignment: .leading, spacing: 4) {
+                        Label("\"Show names\" - See button labels", systemImage: "tag")
+                        Label("\"Show numbers\" - See item numbers", systemImage: "number")
+                        Label("\"Show grid\" - Show precise tap grid", systemImage: "grid")
+                        Label("\"Tap [name]\" - Tap any button", systemImage: "hand.tap")
+                        Label("\"Type [text]\" - Dictate text", systemImage: "text.cursor")
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
                 }
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.secondary.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
 
             // Feedback display
             Text(feedback)
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(color)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
                 .padding()
                 .background(color.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
-            // Interactive buttons
-            HStack(spacing: 12) {
-                Button("Like") {
-                    likeCount += 1
-                    feedback = "Liked! Count: \(likeCount)"
-                }
-                .foregroundStyle(.white)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.pink)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+            // Interactive buttons - stack vertically at accessibility sizes
+            if isAccessibilitySize {
+                VStack(spacing: 12) {
+                    Button("Like") {
+                        likeCount += 1
+                        feedback = "Liked! Count: \(likeCount)"
+                    }
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.pink)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                Button("Share") {
-                    feedback = "Share button activated!"
-                }
-                .foregroundStyle(.white)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.blue)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                    Button("Share") {
+                        feedback = "Share button activated!"
+                    }
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                Button("Save") {
-                    feedback = "Item saved!"
+                    Button("Save") {
+                        feedback = "Item saved!"
+                    }
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.green)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .foregroundStyle(.white)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.green)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+            } else {
+                HStack(spacing: 12) {
+                    Button("Like") {
+                        likeCount += 1
+                        feedback = "Liked! Count: \(likeCount)"
+                    }
+                    .foregroundStyle(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.pink)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    Button("Share") {
+                        feedback = "Share button activated!"
+                    }
+                    .foregroundStyle(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    Button("Save") {
+                        feedback = "Item saved!"
+                    }
+                    .foregroundStyle(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.green)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
             }
 
             // Toggle control
             HStack {
                 Text("Notifications")
                     .font(.body)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer()
                 Toggle("", isOn: $isToggled)
                     .labelsHidden()
@@ -258,11 +302,13 @@ struct VoiceControlTestView: View {
             .background(Color.secondary.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 10))
 
-            // Text input field
+            // Text input field - hide label at accessibility sizes
             VStack(alignment: .leading, spacing: 8) {
-                Text("Say: \"Type your message\"")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if !isAccessibilitySize {
+                    Text("Say: \"Type your message\"")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
 
                 TextField("Tap or speak to type", text: $textInput)
                     .textFieldStyle(.roundedBorder)
@@ -275,57 +321,115 @@ struct VoiceControlTestView: View {
 
             // Selection buttons
             VStack(alignment: .leading, spacing: 8) {
-                Text("Choose an option:")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                HStack(spacing: 8) {
-                    ForEach(options, id: \.self) { option in
-                        Button(option) {
-                            selectedOption = option
-                            feedback = "Selected: \(option)"
-                        }
+                if !isAccessibilitySize {
+                    Text("Choose an option:")
                         .font(.caption)
-                        .foregroundStyle(selectedOption == option ? .white : color)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(selectedOption == option ? color : Color.clear)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(color, lineWidth: 1.5)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .foregroundStyle(.secondary)
+                }
+
+                // Stack vertically at accessibility sizes
+                if isAccessibilitySize {
+                    VStack(spacing: 8) {
+                        ForEach(options, id: \.self) { option in
+                            Button(option) {
+                                selectedOption = option
+                                feedback = "Selected: \(option)"
+                            }
+                            .font(.body)
+                            .foregroundStyle(selectedOption == option ? .white : color)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .frame(maxWidth: .infinity)
+                            .background(selectedOption == option ? color : Color.clear)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(color, lineWidth: 1.5)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        ForEach(options, id: \.self) { option in
+                            Button(option) {
+                                selectedOption = option
+                                feedback = "Selected: \(option)"
+                            }
+                            .font(.caption)
+                            .foregroundStyle(selectedOption == option ? .white : color)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(selectedOption == option ? color : Color.clear)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(color, lineWidth: 1.5)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
                     }
                 }
             }
 
-            // Action buttons
-            HStack(spacing: 12) {
-                Button("Reset") {
-                    likeCount = 0
-                    textInput = ""
-                    selectedOption = "Option 1"
-                    isToggled = false
-                    feedback = "Everything reset!"
-                }
-                .foregroundStyle(color)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.clear)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(color, lineWidth: 2)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+            // Action buttons - stack vertically at accessibility sizes
+            if isAccessibilitySize {
+                VStack(spacing: 12) {
+                    Button("Reset") {
+                        likeCount = 0
+                        textInput = ""
+                        selectedOption = "Option 1"
+                        isToggled = false
+                        feedback = "Everything reset!"
+                    }
+                    .foregroundStyle(color)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.clear)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(color, lineWidth: 2)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                Button("Confirm") {
-                    feedback = "Action confirmed! ✓"
+                    Button("Confirm") {
+                        feedback = "Action confirmed! ✓"
+                    }
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(color)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .foregroundStyle(.white)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(color)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+            } else {
+                HStack(spacing: 12) {
+                    Button("Reset") {
+                        likeCount = 0
+                        textInput = ""
+                        selectedOption = "Option 1"
+                        isToggled = false
+                        feedback = "Everything reset!"
+                    }
+                    .foregroundStyle(color)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.clear)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(color, lineWidth: 2)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    Button("Confirm") {
+                        feedback = "Action confirmed! ✓"
+                    }
+                    .foregroundStyle(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(color)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
             }
         }
         .padding()
