@@ -2177,33 +2177,51 @@ struct IconContrastDemo: View {
 struct ReducedMotionTestView: View {
     let color: Color
     @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var isAnimating = false
     @State private var showCard = true
     @State private var animationTask: Task<Void, Never>? = nil
     @State private var isRunning = false
     @State private var remainingTime = 0
 
+    var isAccessibilitySize: Bool {
+        dynamicTypeSize >= .accessibility1
+    }
+
     var body: some View {
         VStack(spacing: 16) {
-            Text("Toggle Reduce Motion in Accessibility > Motion to see animations adapt or disable.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            // Hide instructions at accessibility sizes
+            if !isAccessibilitySize {
+                Text("Toggle Reduce Motion in Accessibility > Motion to see animations adapt or disable.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding()
+                    .background(Color.secondary.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
 
             // Feature Status
             HStack(spacing: 12) {
-                Image(systemName: reduceMotion ? "checkmark.circle.fill" : "circle")
-                    .font(.title)
-                    .foregroundStyle(color)
+                // Hide icon at accessibility sizes
+                if !isAccessibilitySize {
+                    Image(systemName: reduceMotion ? "checkmark.circle.fill" : "circle")
+                        .font(.title)
+                        .foregroundStyle(color)
+                }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(reduceMotion ? "Reduced Motion Active" : "Animations Enabled")
                         .font(.headline)
-                    Text(reduceMotion ? "Minimal animations" : "Full animations")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    // Hide subtitle at accessibility sizes
+                    if !isAccessibilitySize {
+                        Text(reduceMotion ? "Minimal animations" : "Full animations")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 Spacer()
             }
@@ -2256,13 +2274,18 @@ struct ReducedMotionTestView: View {
                 }
             }) {
                 HStack {
-                    Image(systemName: isRunning ? "clock.fill" : "play.fill")
+                    // Hide icon at accessibility sizes
+                    if !isAccessibilitySize {
+                        Image(systemName: isRunning ? "clock.fill" : "play.fill")
+                    }
                     if isRunning {
                         Text("Running (\(remainingTime)s)")
                             .fontWeight(.semibold)
+                            .fixedSize(horizontal: false, vertical: true)
                     } else {
                         Text("Trigger Animations")
                             .fontWeight(.semibold)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -2279,6 +2302,7 @@ struct ReducedMotionTestView: View {
                 Text("Movement & Spring")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 HStack {
                     Spacer()
@@ -2293,9 +2317,13 @@ struct ReducedMotionTestView: View {
                 .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                Text(reduceMotion ? "Instant position change" : "Bouncy spring animation")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                // Hide description at accessibility sizes
+                if !isAccessibilitySize {
+                    Text(reduceMotion ? "Instant position change" : "Bouncy spring animation")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
             // Scale & Pulse Animation
@@ -2303,6 +2331,7 @@ struct ReducedMotionTestView: View {
                 Text("Scale & Pulse")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 HStack {
                     Spacer()
@@ -2317,9 +2346,13 @@ struct ReducedMotionTestView: View {
                 .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                Text(reduceMotion ? "No scaling animation" : "Pulsing scale effect")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                // Hide description at accessibility sizes
+                if !isAccessibilitySize {
+                    Text(reduceMotion ? "No scaling animation" : "Pulsing scale effect")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
             // Rotation Animation
@@ -2327,6 +2360,7 @@ struct ReducedMotionTestView: View {
                 Text("Rotation")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 HStack {
                     Spacer()
@@ -2341,9 +2375,13 @@ struct ReducedMotionTestView: View {
                 .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                Text(reduceMotion ? "No rotation" : "360° rotation")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                // Hide description at accessibility sizes
+                if !isAccessibilitySize {
+                    Text(reduceMotion ? "No rotation" : "360° rotation")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
             // Opacity Transition (Crossfade)
@@ -2351,16 +2389,21 @@ struct ReducedMotionTestView: View {
                 Text("Opacity Transition")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 ZStack {
                     if showCard {
                         VStack(spacing: 8) {
-                            Image(systemName: "sun.max.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(.orange)
+                            // Hide icon at accessibility sizes
+                            if !isAccessibilitySize {
+                                Image(systemName: "sun.max.fill")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(.orange)
+                            }
                             Text("Day Mode")
-                                .font(.caption)
+                                .font(isAccessibilitySize ? .body : .caption)
                                 .fontWeight(.semibold)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -2369,12 +2412,16 @@ struct ReducedMotionTestView: View {
                         .transition(reduceMotion ? .identity : .opacity)
                     } else {
                         VStack(spacing: 8) {
-                            Image(systemName: "moon.stars.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(.blue)
+                            // Hide icon at accessibility sizes
+                            if !isAccessibilitySize {
+                                Image(systemName: "moon.stars.fill")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(.blue)
+                            }
                             Text("Night Mode")
-                                .font(.caption)
+                                .font(isAccessibilitySize ? .body : .caption)
                                 .fontWeight(.semibold)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -2383,31 +2430,38 @@ struct ReducedMotionTestView: View {
                         .transition(reduceMotion ? .identity : .opacity)
                     }
                 }
-                .frame(height: 100)
+                .frame(height: isAccessibilitySize ? 80 : 100)
                 .onTapGesture {
                     withAnimation(reduceMotion ? .none : .easeInOut(duration: 0.4)) {
                         showCard.toggle()
                     }
                 }
 
-                Text(reduceMotion ? "Instant switch" : "Smooth crossfade")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                // Hide description at accessibility sizes
+                if !isAccessibilitySize {
+                    Text(reduceMotion ? "Instant switch" : "Smooth crossfade")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
-            // Info
-            HStack(spacing: 8) {
-                Image(systemName: "info.circle.fill")
-                    .foregroundStyle(color)
-                Text(reduceMotion ?
-                    "Animations are minimized to prevent motion sickness and distraction" :
-                    "Full animations enhance the user experience")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            // Info - hide at accessibility sizes
+            if !isAccessibilitySize {
+                HStack(spacing: 8) {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(color)
+                    Text(reduceMotion ?
+                        "Animations are minimized to prevent motion sickness and distraction" :
+                        "Full animations enhance the user experience")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding()
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .padding()
-            .background(Color.secondary.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .background(Color.secondary.opacity(0.05))
