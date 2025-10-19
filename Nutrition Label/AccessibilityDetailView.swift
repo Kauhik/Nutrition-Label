@@ -142,15 +142,6 @@ struct AccessibilityDetailView: View {
                     }
                 }
 
-                // Footer - hide at accessibility sizes
-                if !isAccessibilitySize {
-                    Text("Kaushik")
-                        .font(.footnote)
-                        .foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 16)
-                        .padding(.bottom, 8)
-                }
             }
             .padding()
         }

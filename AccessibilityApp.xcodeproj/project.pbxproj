@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		802D65622E9239CA00B441E1 /* Nutrition Label.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nutrition Label.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		802D65712E9239CB00B441E1 /* Nutrition LabelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Nutrition LabelTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		802D657B2E9239CB00B441E1 /* Nutrition LabelUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Nutrition LabelUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		802D65622E9239CA00B441E1 /* AccessibilityApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AccessibilityApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		802D65712E9239CB00B441E1 /* AccessibilityAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AccessibilityAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		802D657B2E9239CB00B441E1 /* AccessibilityAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AccessibilityAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -85,9 +85,9 @@
 		802D65632E9239CA00B441E1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				802D65622E9239CA00B441E1 /* Nutrition Label.app */,
-				802D65712E9239CB00B441E1 /* Nutrition LabelTests.xctest */,
-				802D657B2E9239CB00B441E1 /* Nutrition LabelUITests.xctest */,
+				802D65622E9239CA00B441E1 /* AccessibilityApp.app */,
+				802D65712E9239CB00B441E1 /* AccessibilityAppTests.xctest */,
+				802D657B2E9239CB00B441E1 /* AccessibilityAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		802D65612E9239CA00B441E1 /* Nutrition Label */ = {
+		802D65612E9239CA00B441E1 /* AccessibilityApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 802D65852E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "Nutrition Label" */;
+			buildConfigurationList = 802D65852E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "AccessibilityApp" */;
 			buildPhases = (
 				802D655E2E9239CA00B441E1 /* Sources */,
 				802D655F2E9239CA00B441E1 /* Frameworks */,
@@ -110,16 +110,16 @@
 			fileSystemSynchronizedGroups = (
 				802D65642E9239CA00B441E1 /* Nutrition Label */,
 			);
-			name = "Nutrition Label";
+			name = AccessibilityApp;
 			packageProductDependencies = (
 			);
 			productName = "Nutrition Label";
-			productReference = 802D65622E9239CA00B441E1 /* Nutrition Label.app */;
+			productReference = 802D65622E9239CA00B441E1 /* AccessibilityApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		802D65702E9239CB00B441E1 /* Nutrition LabelTests */ = {
+		802D65702E9239CB00B441E1 /* AccessibilityAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 802D65882E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "Nutrition LabelTests" */;
+			buildConfigurationList = 802D65882E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "AccessibilityAppTests" */;
 			buildPhases = (
 				802D656D2E9239CB00B441E1 /* Sources */,
 				802D656E2E9239CB00B441E1 /* Frameworks */,
@@ -133,16 +133,16 @@
 			fileSystemSynchronizedGroups = (
 				802D65742E9239CB00B441E1 /* Nutrition LabelTests */,
 			);
-			name = "Nutrition LabelTests";
+			name = AccessibilityAppTests;
 			packageProductDependencies = (
 			);
 			productName = "Nutrition LabelTests";
-			productReference = 802D65712E9239CB00B441E1 /* Nutrition LabelTests.xctest */;
+			productReference = 802D65712E9239CB00B441E1 /* AccessibilityAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		802D657A2E9239CB00B441E1 /* Nutrition LabelUITests */ = {
+		802D657A2E9239CB00B441E1 /* AccessibilityAppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 802D658B2E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "Nutrition LabelUITests" */;
+			buildConfigurationList = 802D658B2E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "AccessibilityAppUITests" */;
 			buildPhases = (
 				802D65772E9239CB00B441E1 /* Sources */,
 				802D65782E9239CB00B441E1 /* Frameworks */,
@@ -156,11 +156,11 @@
 			fileSystemSynchronizedGroups = (
 				802D657E2E9239CB00B441E1 /* Nutrition LabelUITests */,
 			);
-			name = "Nutrition LabelUITests";
+			name = AccessibilityAppUITests;
 			packageProductDependencies = (
 			);
 			productName = "Nutrition LabelUITests";
-			productReference = 802D657B2E9239CB00B441E1 /* Nutrition LabelUITests.xctest */;
+			productReference = 802D657B2E9239CB00B441E1 /* AccessibilityAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 802D655D2E9239CA00B441E1 /* Build configuration list for PBXProject "Nutrition Label" */;
+			buildConfigurationList = 802D655D2E9239CA00B441E1 /* Build configuration list for PBXProject "AccessibilityApp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				802D65612E9239CA00B441E1 /* Nutrition Label */,
-				802D65702E9239CB00B441E1 /* Nutrition LabelTests */,
-				802D657A2E9239CB00B441E1 /* Nutrition LabelUITests */,
+				802D65612E9239CA00B441E1 /* AccessibilityApp */,
+				802D65702E9239CB00B441E1 /* AccessibilityAppTests */,
+				802D657A2E9239CB00B441E1 /* AccessibilityAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		802D65732E9239CB00B441E1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 802D65612E9239CA00B441E1 /* Nutrition Label */;
+			target = 802D65612E9239CA00B441E1 /* AccessibilityApp */;
 			targetProxy = 802D65722E9239CB00B441E1 /* PBXContainerItemProxy */;
 		};
 		802D657D2E9239CB00B441E1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 802D65612E9239CA00B441E1 /* Nutrition Label */;
+			target = 802D65612E9239CA00B441E1 /* AccessibilityApp */;
 			targetProxy = 802D657C2E9239CB00B441E1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -474,7 +474,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nutrition Label.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Nutrition Label";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AccessibilityApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AccessibilityApp";
 			};
 			name = Debug;
 		};
@@ -496,7 +496,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nutrition Label.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Nutrition Label";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AccessibilityApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AccessibilityApp";
 			};
 			name = Release;
 		};
@@ -543,7 +543,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		802D655D2E9239CA00B441E1 /* Build configuration list for PBXProject "Nutrition Label" */ = {
+		802D655D2E9239CA00B441E1 /* Build configuration list for PBXProject "AccessibilityApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				802D65832E9239CB00B441E1 /* Debug */,
@@ -552,7 +552,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		802D65852E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "Nutrition Label" */ = {
+		802D65852E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "AccessibilityApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				802D65862E9239CB00B441E1 /* Debug */,
@@ -561,7 +561,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		802D65882E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "Nutrition LabelTests" */ = {
+		802D65882E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "AccessibilityAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				802D65892E9239CB00B441E1 /* Debug */,
@@ -570,7 +570,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		802D658B2E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "Nutrition LabelUITests" */ = {
+		802D658B2E9239CB00B441E1 /* Build configuration list for PBXNativeTarget "AccessibilityAppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				802D658C2E9239CB00B441E1 /* Debug */,
